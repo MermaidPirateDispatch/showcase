@@ -4,9 +4,12 @@
         <title>Welcome!</title>
     </head>
     <body>
+        <script src="../scripts/scrambled_eggs.js"></script>
         <script>
             const urlParams = new URLSearchParams(window.location.search);
-            const myParam = urlParams.get('sessionid');
+            const myParam = urlParams.get('puzzleId');
+            const text = myParam || 'Test Page';
+            document.write(`<h1>${unscramble(text)}</h1>`);
         </script>
     </body>
 </html>
