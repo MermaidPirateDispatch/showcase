@@ -4,12 +4,14 @@
         <title>Welcome!</title>
     </head>
     <body>
+        <script src="../scripts/query_strings.js"></script>
         <script src="../scripts/scrambled_eggs.js"></script>
+        <script src="../scripts/hash_browns.js"></script>
         <script>
-            const urlParams = new URLSearchParams(window.location.search);
-            const myParam = urlParams.get('puzzleId');
-            const text = myParam || 'Test Page';
-            document.write(`<h1>${unscramble(text)}</h1>`);
+            const queryStrings = getQueryStrings(['puzzleId']);
+            const text = queryStrings['puzzleId'] || 'Test Page';
+            //TODO: the number (11 here) should be in the query string as well methinks.
+            document.write(`<h1>${unscramble(text, 11)}</h1>`);
         </script>
     </body>
 </html>
