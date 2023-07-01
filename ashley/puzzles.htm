@@ -8,10 +8,10 @@
         <script src="../scripts/scrambled_eggs.js"></script>
         <script src="../scripts/hash_browns.js"></script>
         <script>
-            const queryStrings = getQueryStrings(['puzzleId']);
+            const queryStrings = getQueryStrings(['puzzleId', 'r']);
             const text = queryStrings['puzzleId'] || 'Test Page';
-            //TODO: the number (11 here) should be in the query string as well methinks.
-            document.write(`<h1>${unscramble(text, 11)}</h1>`);
+            const rotations = parseInt(queryStrings['r']);
+            document.write(`<h1>${unscramble(text, rotations)}</h1>`);
         </script>
     </body>
 </html>

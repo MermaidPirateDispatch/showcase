@@ -7,10 +7,14 @@ function unscramble(key, rotations) {
     if (scrambledEggs.hasOwnProperty(key)) {
         return scramble(scrambledEggs[key], rotations, true);
     }
-    return key;
+    return 'Unknown Key';
 }
 
 function scramble(plaintext, rotations, reverse) {
+    if (isNaN(rotations) || rotations === 0) {
+        return "Unspecified. Check values and try again.";
+    }
+
     // Calculate the size of the grid
     let gridSize = Math.ceil(Math.sqrt(plaintext.length));
     if (gridSize % 2 === 0) {
