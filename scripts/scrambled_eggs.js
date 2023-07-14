@@ -1,6 +1,8 @@
 const scrambledEggs = {
     'test': 'uoy eccussvri  !dlsnyfrol I da fa uoY .  e no srplufituae a  oeu fu sthbn T   h ejhanglosh spII aw diehui e  upna  tttos y rel.piohKli  elrhayyd adyem  ikc I t su revr  ot uoy aTsseua inI .ainowsaoy rofnntyeeeaoe oorhww si eg',
     'kaj': '  !jak    .oics  esatvf em rob ool ainoeauIfr attG .uoy td   us oIiaw ye sT t ufoad alrieh  o i  evfdc si uinra erth yss o  rnat el  i  Yc od yokcatTm   yf hcugnnhmeK!h knahT !mehs jgTwosetseb mseaK rofeoohao aonorgnt  asi eg',
+    'tbday': '            hqs.qhh svbj             b s  !qgeninobx hy u p yt bl oonv ssL x q h  vaxreibq gh w    gv lrh  l byx q exrsbevbhqlg u v e yeyb oezauqbxslhby  nieltyyi bbn l bb qgineoshezhorsEbux teqnss i bt rvds Tel biuybgu wqbnuqsoqnhin h bhhnbhbubbn qoroyw,ero q whsyiq  sbx Y .qnb rneya hqeqgiqnlnu ogtt.bbbg  usnv bqyp y bhsusnb re biry gvg nrs l obx qboxryi zr',
+    'tbday_title': `lzyr'euP T dhto B snzaiai`,
 };
 
 function unscramble(key, rotations) {
