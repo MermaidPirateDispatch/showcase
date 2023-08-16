@@ -25,7 +25,7 @@
                 font-family: 'Courier New', Courier, monospace;
                 font-weight: 2em;
                 width: 450px;
-                height: 150px;
+                height: 250px;
                 resize: none;
                 border: none;
                 background-color: unset;
@@ -78,49 +78,93 @@
             
             const puzzleDisplay = createElement('div', {'style': 'display:flex;flex-wrap:wrap;'}, null);
             const puzzleHeader = createElement('h1', {}, displayTitle);
-            const puzzleInstructions = createElement('details', {}, null);
-            const instructionsSummary = createElement('summary', {'style': 'cursor:pointer;user-select:none;'}, 'Instructions');
+
+            const puzzleHolder = createElement('div', {'style': 'width:600px;'}, null);
+            puzzleHolder.appendChild(puzzleHeader);
+            puzzleHolder.appendChild(puzzleDisplay);
+            appContainer.appendChild(puzzleHolder);
+
+            const toolsContainer = createElement('div', {}, null);
+
+            //Instructions
             const instructionsContainer = createElement('div', {'style': 'display:flex;'}, null);
-            //TODO: need new character, maybe her phone as a character (a black iPhone)
-            const instructionsImage = createElement('img', {'src': 'imgs/iPhone.svg', 'style': 'width:50%;height:50%;'}, null);
+            
+            const instructionsImage = createElement('img', {'src': 'imgs/iPhone.svg', 'style': 'width:200px;'}, null);
             const instructionsDetailsContainer = createElement('div', {'style': 'width:250px;'}, null);
-            const instructionsDetailsBristles = createElement('p', {}, `Hi there! I'm your loyal iPhone! I'm here to answer your questions and help you with this puzzle!`);
-            const instructionsDetailsSerious = createElement('p', {}, `Click in a gray space above each encrypted letter to type your guess for what "real" letter should be there. Solve the puzzle by looking for patterns, words you know, and by paying attention to the frequency analysis! If the window closes before you are finished, don\'t worry! Your progress is auto-saved.`);
+            
+            //TODO: create and upload YouTube video and insert link here!
+            const videoLink = '#';
+            const instructionsDetailsIntro = createElement('p', {}, `Hi there! I'm your loyal iPhone! I'm here to answer your questions and help you with this puzzle! Start by watching <a href="${videoLink}" target="_blank">this video</a> for basic instructions.`);
+            const instructionsDetailsSerious = createElement('p', {}, `Click in a gray space above an encrypted letter to type your guess for what "real" letter should be there. Solve the puzzle by looking for patterns, such as words you know! If the window closes before you are finished, don\'t worry! Your progress is auto-saved.`);
             const instructionsDetailsFinal = createElement('p', {}, `The "Letter Frequencies" chart can help inform some of your guesses. Though it won't <em>give</em> you the solution, you can reference <a href="https://pi.math.cornell.edu/~mec/2003-2004/cryptography/subs/frequencies.html" target="_blank">this chart</a> to see if some of the letters match up.`);
-            instructionsDetailsContainer.appendChild(instructionsDetailsBristles);
+
+            instructionsDetailsContainer.appendChild(instructionsDetailsIntro);
             instructionsDetailsContainer.appendChild(instructionsDetailsSerious);
             instructionsDetailsContainer.appendChild(instructionsDetailsFinal);
             instructionsContainer.appendChild(instructionsImage);
             instructionsContainer.appendChild(instructionsDetailsContainer);
-            puzzleInstructions.appendChild(instructionsSummary);
-            puzzleInstructions.appendChild(instructionsContainer);
-            const puzzleHolder = createElement('div', {'style': 'width:600px;'}, null);
-            puzzleHolder.appendChild(puzzleHeader);
-            puzzleHolder.appendChild(puzzleInstructions);
-            puzzleHolder.appendChild(puzzleDisplay);
-            appContainer.appendChild(puzzleHolder);
 
+            const puzzleInstructions = makeDetail('Instructions', instructionsContainer);
+
+            toolsContainer.appendChild(puzzleInstructions);
+            //End Instructions
+
+            //Frequency Display
             const frequencyDisplay = createFrequencyDisplay();
-            const frequencyDisplayContainer = createElement('div', {}, null);
-            frequencyDisplayContainer.appendChild(frequencyDisplay);
-            appContainer.appendChild(frequencyDisplayContainer);
+            toolsContainer.appendChild(frequencyDisplay);
+            //End Frequency Display
 
+            //Preview
             const previewDisplay = createElement('div', {}, null);
             const previewFieldset = makeFieldset('Preview');
             const preview = createElement('textArea', {'class': 'full-preview', 'disabled': 'true'}, null);
             previewFieldset.appendChild(preview);
-            previewDisplay.appendChild(previewFieldset);
-            appContainer.appendChild(previewDisplay);
+            toolsContainer.appendChild(previewFieldset);
+            //End Preview
             
+            //Controls
             const controlsContainer = createElement('div', {}, null);
             const controlsFieldset = makeFieldset('Controls');
-            const allControls = createElement('div', {}, null);
+            const allControls = createElement('div', {'style': 'display:flex;justify-content:space-around'}, null);
+
             const resetButton = createElement('input', {'type': 'button', 'value': 'Reset'}, null);
             resetButton.addEventListener('click', resetAll, false);
+
+            const winButton = createElement('input', {'type': 'button', 'value': 'I Win!', 'disabled': true}, null);
+            winButton.addEventListener('click', () => {window.location.href = winnerURLfromSolution(preview.value);}, false);
+
+            function winnerURLfromSolution(solution) {
+                const a = rotations;
+                const b = (a % 5) + 1;
+                const c = parseInt(hash(solution)) % 5;
+                const rounds = 4;
+
+                let url = window.location.origin + '/showcase/ashley/';
+                let offset = 0;
+                let pageName = '';
+                for (let i = 0; i < rounds; i++) {
+                    offset = (offset + a) % solution.length;
+                    pageName += solution.substr(offset, 1);
+                    offset = (offset + b) % solution.length;
+                    pageName += solution.substr(offset, 1);
+                    offset = (offset + c) % solution.length;
+                    pageName += solution.substr(offset, 1);
+                }
+
+                pageName = pageName.replace(/[^a-z0-9]|\s+|\r?\n|\r/gmi, '');
+
+                return url + pageName + '.htm' + window.location.search;
+            }
+
             allControls.appendChild(resetButton);
+
+            allControls.appendChild(winButton);
             controlsFieldset.appendChild(allControls);
             controlsContainer.appendChild(controlsFieldset);
-            appContainer.appendChild(controlsContainer);
+            toolsContainer.appendChild(controlsContainer);
+            //End Controls
+
+            appContainer.appendChild(toolsContainer);
 
             let i = 0;
             for (let word of words) {
@@ -264,8 +308,9 @@
                 preview.value = createPreview();
                 var currentHash = hash(preview.value);
                 if (currentHash === hashBrowns[puzzleKey]) {
-                    //TODO: how to handle winning?
-                    alert('You win!');
+                    //TODO: replace the alert with some other in-UI element?
+                    alert('You win! Click the "I Win!" button to claim your prize!');
+                    winButton.disabled = false;
                 }
             }
 
@@ -291,7 +336,6 @@
             }
 
             function createFrequencyDisplay() {
-                const fieldset = makeFieldset('Letter Frequencies');
                 const container = createElement('div', {'class': 'bar-graph'}, null);
 
                 const counts = {};
@@ -347,8 +391,7 @@
                     container.appendChild(bar);
                 }
 
-                fieldset.appendChild(container);
-                return fieldset;
+                return makeDetail('Letter Frequencies', container);
             }
 
             function makeFieldset(legendText) {
@@ -356,6 +399,14 @@
                 const legend = createElement('legend', {}, legendText);
                 fieldset.appendChild(legend);
                 return fieldset;
+            }
+
+            function makeDetail(summaryText, child) {
+                const details = createElement('details', {'style': 'padding:5px;margin:3px;border-radius:5px;border:1px solid black;'}, null);
+                const summary = createElement('summary', {'style': 'cursor:pointer;user-select:none;'}, summaryText);
+                details.appendChild(summary);
+                details.appendChild(child);
+                return details;
             }
 
             function createElement(type, attributes, innerHTML) {
