@@ -91,7 +91,7 @@
             
             const instructionsImage = createElement('img', {'src': 'imgs/iPhone.svg', 'style': 'width:200px;'}, null);
             const instructionsDetailsContainer = createElement('div', {'style': 'width:250px;'}, null);
-            
+
             //TODO: create and upload YouTube video and insert link here!
             const videoLink = '#';
             const instructionsDetailsIntro = createElement('p', {}, `Hi there! I'm your loyal iPhone! I'm here to answer your questions and help you with this puzzle! Start by watching <a href="${videoLink}" target="_blank">this video</a> for basic instructions.`);
@@ -309,6 +309,8 @@
                 var currentHash = hash(preview.value);
                 if (currentHash === hashBrowns[puzzleKey]) {
                     //TODO: replace the alert with some other in-UI element?
+                    //TODO: need some way to store a unique solution key so the winner page can verify it is solved properly.
+                    // maybe just store the whole solution in storage and check the hash before loading the solution page...
                     alert('You win! Click the "I Win!" button to claim your prize!');
                     winButton.disabled = false;
                 }
