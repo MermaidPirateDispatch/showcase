@@ -45,6 +45,7 @@
         <script src="../scripts/query_strings.js"></script>
         <script src="../scripts/scrambled_eggs.js"></script>
         <script src="../scripts/hash_browns.js"></script>
+        <script src="../scripts/html_tools.js"></script>
         <script>
             //This is the key driver for the entire operation. For a new puzzle, set a new cipherTextFormatted,
             //with the proper punctuation and capitalization, and the code will do the rest.
@@ -314,6 +315,9 @@
                     alert('You win! Click the "I Win!" button to claim your prize!');
                     winButton.disabled = false;
                 }
+                else {
+                    winButton.disabled = true;
+                }
             }
 
             function createPreview() {
@@ -394,32 +398,6 @@
                 }
 
                 return makeDetail('Letter Frequencies', container);
-            }
-
-            function makeFieldset(legendText) {
-                const fieldset = createElement('fieldset');
-                const legend = createElement('legend', {}, legendText);
-                fieldset.appendChild(legend);
-                return fieldset;
-            }
-
-            function makeDetail(summaryText, child) {
-                const details = createElement('details', {'style': 'padding:5px;margin:3px;border-radius:5px;border:1px solid black;'}, null);
-                const summary = createElement('summary', {'style': 'cursor:pointer;user-select:none;'}, summaryText);
-                details.appendChild(summary);
-                details.appendChild(child);
-                return details;
-            }
-
-            function createElement(type, attributes, innerHTML) {
-                const element = document.createElement(type);
-                for (const a in attributes) {
-                    element.setAttribute(a, attributes[a]);
-                }
-                if (innerHTML) {
-                    element.innerHTML = innerHTML;
-                }
-                return element;
             }
 
             function makeId(word, wordIndex, index) {
