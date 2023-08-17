@@ -72,6 +72,15 @@
                 }
             }
 
+            let uniqueLetters = '';
+            for (let i = 0; i < cipherTextFormatted.length; i++) {
+                const l = cipherTextFormatted.substr(i, 1).toUpperCase();
+                if (rawAlphabet.indexOf(l) > -1 && uniqueLetters.indexOf(l) < 0) {
+                    uniqueLetters += l;
+                }
+            }
+            const numUniqueLetters = uniqueLetters.length;
+
             document.title = displayTitle;
 
             const appContainer = createElement('div', {'style': 'width:100%;height:100%;display:flex;flex-wrap:wrap;'}, null);
@@ -308,7 +317,8 @@
                 }
                 preview.value = createPreview();
                 var currentHash = hash(preview.value);
-                if (currentHash === hashBrowns[puzzleKey]) {
+                const numRules = Object.entries(rules).length;
+                if (numRules == numUniqueLetters && currentHash === hashBrowns[puzzleKey]) {
                     //TODO: replace the alert with some other in-UI element?
                     //TODO: need some way to store a unique solution key so the winner page can verify it is solved properly.
                     // maybe just store the whole solution in storage and check the hash before loading the solution page...

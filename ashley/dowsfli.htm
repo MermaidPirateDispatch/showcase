@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Something Went Wrong</title>
+    </head>
+    <body>
+        <script src="../scripts/query_strings.js"></script>
+        <script src="../scripts/scrambled_eggs.js"></script>
+        <script src="../scripts/hash_browns.js"></script>
+        <script src="../scripts/html_tools.js"></script>
+        <script>
+            const queryStrings = getQueryStrings(['puzzleId', 'r']);
+            const puzzleKey = queryStrings['puzzleId'] || 'Something went wrong.';
+            const rotations = parseInt(queryStrings['r']);
+            const displayTitle = unscramble(puzzleKey + '_title', rotations);
+
+            const winner = hash(localStorage.getItem(puzzleKey + rotations.toString())) == hashBrowns[puzzleKey + '_solved'];
+
+            if (!winner) {
+                document.title = displayTitle + ' - Prize denied!';
+                //TODO: add in something about doing the actual puzzle first. Link back to the puzzles page?
+            }
+            else {
+
+                const prizeString = unscramble(puzzleKey + '_prize', rotations);
+                const prize = JSON.parse(prizeString);
+
+                document.title = displayTitle + ' - Prize!';
+
+                //TODO: embed some kind of video for her as well.
+
+                const prizeDisplay = createElement('div', {'style': 'width:800px;height:100%;margin:0px auto;display:flex;flex-wrap:wrap;flex-direction:column;'}, null);
+                document.body.appendChild(prizeDisplay);
+                
+                const headerText = createElement('h1', {}, displayTitle + ' - Prize!');
+                prizeDisplay.appendChild(headerText);
+
+                const prizeExplanation = createElement('p', {}, 'I will not know which items you expand and which ones you never look at. Feel free to only look at the ones you want to know. You can come back to this page any time to see things you are not ready to see today.');
+                prizeDisplay.appendChild(prizeExplanation);
+
+                prizeDisplay.appendChild(createPrizeDetail('Full Name', prize['fullName'], 'This is my real first and last name.'));
+
+                prizeDisplay.appendChild(createPrizeDetail('Birthday', prize['birthday'], 'This is really the full date of my birth.'));
+
+                prizeDisplay.appendChild(createPrizeDetail('Email Address', prize['emailAddress'], 'Now you will always have it.'));
+
+                prizeDisplay.appendChild(createPrizeDetail('Phone Number', prize['phoneNumber'], 'Even if you are not ready to contact me, now you can when you are ready.'));
+
+                prizeDisplay.appendChild(createPrizeDetail('Credit Card Information', prize['creditCardNumber'], 'Is this what you most wanted for your birthday? lol'));
+
+                prizeDisplay.appendChild(createPrizeDetail('Social Security Number', prize['socialSecurityNumber'], 'What would you even do with it?!? lol'));
+            }
+
+            function createPrizeDetail(header, displayText, textText) {
+                const details = createElement('div', {'style': ''}, null);
+                const display = createElement('h2', {}, displayText);
+                details.appendChild(display);
+                const text = createElement('p', {}, textText);
+                details.appendChild(text);
+                return makeDetail(header, details);
+            }
+
+        </script>
+    </body>
+</html>

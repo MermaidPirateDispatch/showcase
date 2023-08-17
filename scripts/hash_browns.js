@@ -1,6 +1,7 @@
 const hashBrowns = {
-    "tbday" : 705994421,
-    "test" : 633009627,
+    'tbday' : 705994421,
+    'tbday_solved' : 733993026,
+    'test' : 633009627,
 };
 
 function hash(text) {
