@@ -46,6 +46,7 @@
         <script src="../scripts/scrambled_eggs.js"></script>
         <script src="../scripts/hash_browns.js"></script>
         <script src="../scripts/html_tools.js"></script>
+        <script src="../scripts/string_tools.js"></script>
         <script>
             //This is the key driver for the entire operation. For a new puzzle, set a new cipherTextFormatted,
             //with the proper punctuation and capitalization, and the code will do the rest.
@@ -161,7 +162,7 @@
                     pageName += solution.substr(offset, 1);
                 }
 
-                pageName = pageName.replace(/[^a-z0-9]|\s+|\r?\n|\r/gmi, '');
+                pageName = removeNonAlphanumeric(pageName);
 
                 return url + pageName + '.htm' + window.location.search;
             }

@@ -9,9 +9,17 @@
         <script src="../scripts/hash_browns.js"></script>
         <script>
             const queryStrings = getQueryStrings(['puzzleId', 'r']);
-            const text = queryStrings['puzzleId'] || 'Test Page';
-            const rotations = parseInt(queryStrings['r']);
-            document.write(`<h1>${unscramble(text, rotations)}</h1>`);
+            const puzzleId = queryStrings['puzzleId'];
+
+            if (puzzleId) {
+                const rotations = parseInt(queryStrings['r']);
+                const title = unscramble(puzzleId + '_title', rotations);
+                document.title = title;
+            }
+            else {
+                //TODO: something something unknown puzzle id
+            }
+            
         </script>
     </body>
 </html>

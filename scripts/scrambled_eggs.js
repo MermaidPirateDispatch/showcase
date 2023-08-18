@@ -1,11 +1,12 @@
 const scrambledEggs = {
     //test uses 13 as the rotations
-    'test': '    hksljddjkaiEcljAf kedhjnarblf Cp !cdel k wrmh e ,sb j tvagj .vijha ajh.mko fjqhA iekae jfm kelhlffekb  ab j jd akd fefmjfe jbliimcdeaajc  Esu f b najbgecmVflaafdrj  aa  abjbecbfd f kjle  bjia   e aahxn.rfif jjbrrsrkhvj g jj f   a nf fhaje  je.ja mi inefjqrbjdro vf akk  lmrllhabk jbae n soa a   r dicju Ek me  j fhdb tjhhir f fpjtjf mfkvbviojli fjhpsjta hieamaeaffqfki ifr   hv j lkjdafl cdetkoqpe ka kmbai  dkrl  tjkeiajial   dcq  nciff',
-    'test_title': 'xampuE ze l l  z eP',
-    'kaj': '  !jak    .oics  esatvf em rob ool ainoeauIfr attG .uoy td   us oIiaw ye sT t ufoad alrieh  o i  evfdc si uinra erth yss o  rnat el  i  Yc od yokcatTm   yf hcugnnhmeK!h knahT !mehs jgTwosetseb mseaK rofeoohao aonorgnt  asi eg',
-    'tbday': '            hqs.qhh svbj             b s  !qgeninobx hy u p yt bl oonv ssL x q h  vaxreibq gh w    gv lrh  l byx q exrsbevbhqlg u v e yeyb oezauqbxslhby  nieltyyi bbn l bb qgineoshezhorsEbux teqnss i bt rvds Tel biuybgu wqbnuqsoqnhin h bhhnbhbubbn qoroyw,ero q whsyiq  sbx Y .qnb rneya hqeqgiqnlnu ogtt.bbbg  usnv bqyp y bhsusnb re biry gvg nrs l obx qboxryi zr',
+    'test': `    hksljddjkaiEcljAf kedhjnarblf Cp !cdel k wrmh e ,sb j tvagj .vijha ajh.mko fjqhA iekae jfm kelhlffekb  ab j jd akd fefmjfe jbliimcdeaajc  Esu f b najbgecmVflaafdrj  aa  abjbecbfd f kjle  bjia   e aahxn.rfif jjbrrsrkhvj g jj f   a nf fhaje  je.ja mi inefjqrbjdro vf akk  lmrllhabk jbae n soa a   r dicju Ek me  j fhdb tjhhir f fpjtjf mfkvbviojli fjhpsjta hieamaeaffqfki ifr   hv j lkjdafl cdetkoqpe ka kmbai  dkrl  tjkeiajial   dcq  nciff`,
+    'test_title': `xampuE ze l l  z eP`,
+    'kaj': `  !jak    .oics  esatvf em rob ool ainoeauIfr attG .uoy td   us oIiaw ye sT t ufoad alrieh  o i  evfdc si uinra erth yss o  rnat el  i  Yc od yokcatTm   yf hcugnnhmeK!h knahT !mehs jgTwosetseb mseaK rofeoohao aonorgnt  asi eg`,
+    'tbday': `            hqs.qhh svbj             b s  !qgeninobx hy u p yt bl oonv ssL x q h  vaxreibq gh w    gv lrh  l byx q exrsbevbhqlg u v e yeyb oezauqbxslhby  nieltyyi bbn l bb qgineoshezhorsEbux teqnss i bt rvds Tel biuybgu wqbnuqsoqnhin h bhhnbhbubbn qoroyw,ero q whsyiq  sbx Y .qnb rneya hqeqgiqnlnu ogtt.bbbg  usnv bqyp y bhsusnb re biry gvg nrs l obx qboxryi zr`,
     'tbday_title': `lzyr'euP T dhto B snzaiai`,
-    'tbday_prize': '             "a            }n"  "tl:91 ,52 ,u 8sibeinm""myms3"Cr"phon6ihropJy6t,d"lucDaaod?yNh"- ?deoduN1N,ad:2:"rSrd"5b"a"a,1erclaabe.pa:yb9""eeedccir-""tar":"R@iaa1uslilit5emguiimiserddAlnor8a{lbe","daddaH n"rmrB":"emaNlluf',
+    'tbday_quiz': ``,
+    'tbday_prize': `             "a            }n"  "tl:91 ,52 ,u 8sibeinm""myms3"Cr"phon6ihropJy6t,d"lucDaaod?yNh"- ?deoduN1N,ad:2:"rSrd"5b"a"a,1erclaabe.pa:yb9""eeedccir-""tar":"R@iaa1uslilit5emguiimiserddAlnor8a{lbe","daddaH n"rmrB":"emaNlluf`,
 };
 
 function unscramble(key, rotations) {
