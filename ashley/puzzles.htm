@@ -7,17 +7,63 @@
         <script src="../scripts/query_strings.js"></script>
         <script src="../scripts/scrambled_eggs.js"></script>
         <script src="../scripts/hash_browns.js"></script>
+        <script src="../scripts/html_tools.js"></script>
         <script>
             const queryStrings = getQueryStrings(['puzzleId', 'r']);
             const puzzleId = queryStrings['puzzleId'];
+
+            const quizGrader = [];
 
             if (puzzleId) {
                 const rotations = parseInt(queryStrings['r']);
                 const title = unscramble(puzzleId + '_title', rotations);
                 document.title = title;
+
+                const objStr = unscramble(puzzleId + '_quiz', rotations);
+                const obj = JSON.parse(objStr);
+                const quiz = obj['quiz'];
+                
+                const quizDisplay = createElement('div', {'style': 'width:800px;height:100%;margin:0px auto;display:flex;flex-wrap:wrap;flex-direction:column;'}, null);
+                document.body.appendChild(quizDisplay);
+
+                quizDisplay.appendChild(createElement('h1', {}, 'Quiz'));
+
+                for (let question of quiz) {
+                    const q = makeQuizQuestion(question);
+                    quizDisplay.appendChild(q);
+                }
+
+                //TODO: submit/reset buttons and grading using the quizGrader
+
+
+                //base url: const url = window.location.origin + '/showcase/ashley/';
+                //link: url + pageName + '.htm' + window.location.search;
             }
             else {
                 //TODO: something something unknown puzzle id
+            }
+
+            function makeQuizQuestion(questionObj) {
+                //{'question': `text?`, 'options': {'a': 'thing1', 'b': 'thing2', 'c': 'thing3', 'd': 'thing4'}, 'answer': 'c'},
+                const qNum = quizGrader.length + 1;
+                const qId = `question_${qNum.toString()}`;
+                const container = makeFieldset('Question ' + qNum.toString());
+                const qText = createElement('h2', {}, questionObj['question']);
+                container.appendChild(qText);
+                //TODO: better formatting?
+                const options = questionObj['options'];
+                for (let option in options) {
+                    const text = options[option];
+                    const optId = qId + '_' + option;
+                    const radio = createElement('input', {'type': 'radio', 'id': optId, 'name': qId, 'value': option}, null);
+                    const label = createElement('label', {'for': optId}, text);
+                    const br = createElement('br', {}, null);
+                    container.appendChild(radio);
+                    container.appendChild(label);
+                    container.appendChild(br);
+                }
+                quizGrader.push({'qId': qId, 'answer': questionObj['answer']});
+                return container;
             }
             
         </script>
