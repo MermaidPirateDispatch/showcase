@@ -33,14 +33,32 @@
                     quizDisplay.appendChild(q);
                 }
 
-                //TODO: submit/reset buttons and grading using the quizGrader
-
-
-                //base url: const url = window.location.origin + '/showcase/ashley/';
-                //link: url + pageName + '.htm' + window.location.search;
+                const submitButton = createElement('input', {'type': 'button', 'value': 'Submit', 'style': 'heigh:3em;font-size:2em;'}, null);
+                submitButton.addEventListener('click', () => {gradeQuiz();}, false);
+                quizDisplay.appendChild(submitButton);
             }
             else {
                 //TODO: something something unknown puzzle id
+            }
+
+            function gradeQuiz() {
+                let answers = '';
+                for (let i = 0; i < quizGrader.length; i++) {
+                    answers += quizGrader[i]['qId'] + ':' + quizGrader[i]['answer'];
+                    const options = document.getElementsByName(quizGrader[i]['qId']);
+                    const selected = Array.from(options).find((r) => r.checked);
+                    if (!selected || selected.value !== quizGrader[i]['answer']) {
+                        return failedQuiz();
+                    }
+                }
+                //TODO: write answers to localStorage using a puzzleId-based key that can be verified before loading the puzzle
+                const url = window.location.origin + '/showcase/ashley/';
+                window.location.href = url + 'crypto_puzzle.htm' + window.location.search;
+            }
+
+            function failedQuiz() {
+                //TODO: something in the UI instead of an alert
+                alert('Sorry, you have failed the quiz. Please try again.');
             }
 
             function makeQuizQuestion(questionObj) {
