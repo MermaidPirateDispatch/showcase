@@ -14,6 +14,8 @@
 
             const quizGrader = [];
 
+            //TOOD: also check the date and only make the quiz available on/after a certain date?
+
             if (puzzleId) {
                 const rotations = parseInt(queryStrings['r']);
                 const title = unscramble(puzzleId + '_title', rotations);
@@ -51,7 +53,7 @@
                         return failedQuiz();
                     }
                 }
-                //TODO: write answers to localStorage using a puzzleId-based key that can be verified before loading the puzzle
+                //TODO: write answers to localStorage using a puzzleId-based key that can be verified before loading the next puzzle
                 const url = window.location.origin + '/showcase/ashley/';
                 window.location.href = url + 'crypto_puzzle.htm' + window.location.search;
             }
