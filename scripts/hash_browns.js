@@ -1,6 +1,6 @@
 const hashBrowns = {
     'tbday' : 705994421,
-    'tbday_solved' : 733993026,
+    'tbday_solved' : 202999076,
     'test' : 633009627,
 };
 

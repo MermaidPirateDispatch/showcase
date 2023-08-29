@@ -5,5 +5,9 @@ This is a place to showcase some of my work.
 Project Ashley is for someone specific but the technologies will be showcase-worthy.
 
 ## TO-DO for Ashley
-Need a track still: from puzzle "login" to answering questions to arriving at the final puzzle.
+YouTube video for prize (probalby contains puzzles to solve still, like riddles).
+
+Make it look better.
+
+iPhone graphic needs updating.
 

@@ -103,7 +103,6 @@
             const instructionsImage = createElement('img', {'src': 'imgs/iPhone.svg', 'style': 'width:200px;'}, null);
             const instructionsDetailsContainer = createElement('div', {'style': 'width:250px;'}, null);
 
-            //TODO: create and upload YouTube video and insert link here!
             const videoLink = 'https://youtu.be/rDLs5G3_mrw';
             const instructionsDetailsIntro = createElement('p', {}, `Hi there! I'm your loyal iPhone! I'm here to answer your questions and help you with this puzzle! Start by watching <a href="${videoLink}" target="_blank">this video</a> for basic instructions.`);
             const instructionsDetailsSerious = createElement('p', {}, `Click in a gray space above an encrypted letter to type your guess for what "real" letter should be there. Solve the puzzle by looking for patterns, such as words you know! If the window closes before you are finished, don\'t worry! Your progress is auto-saved.`);
@@ -150,7 +149,6 @@
                 const c = parseInt(hash(solution)) % 5;
                 const rounds = 4;
 
-                const url = window.location.origin + '/showcase/ashley/';
                 let offset = 0;
                 let pageName = '';
                 for (let i = 0; i < rounds; i++) {
@@ -164,7 +162,7 @@
 
                 pageName = removeNonAlphanumeric(pageName);
 
-                return url + pageName + '.htm' + window.location.search;
+                return pageName + '.htm' + window.location.search;
             }
 
             allControls.appendChild(resetButton);
@@ -321,8 +319,6 @@
                 const numRules = Object.entries(rules).length;
                 if (numRules == numUniqueLetters && currentHash === hashBrowns[puzzleKey]) {
                     //TODO: replace the alert with some other in-UI element?
-                    //TODO: need some way to store a unique solution key so the winner page can verify it is solved properly.
-                    // maybe just store the whole solution in storage and check the hash before loading the solution page...
                     alert('You win! Click the "I Win!" button to claim your prize!');
                     winButton.disabled = false;
                 }

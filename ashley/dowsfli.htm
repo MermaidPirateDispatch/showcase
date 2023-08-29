@@ -14,14 +14,7 @@
             const rotations = parseInt(queryStrings['r']);
             const displayTitle = unscramble(puzzleKey + '_title', rotations);
 
-            const winner = hash(localStorage.getItem(puzzleKey + rotations.toString())) == hashBrowns[puzzleKey + '_solved'];
-
-            if (!winner) {
-                document.title = displayTitle + ' - Prize denied!';
-                //TODO: add in something about doing the actual puzzle first. Link back to the puzzles page?
-            }
-            else {
-
+            if (hash(localStorage.getItem(puzzleKey + rotations.toString())) === hashBrowns[puzzleKey + '_solved']) {
                 const prizeString = unscramble(puzzleKey + '_prize', rotations);
                 const prize = JSON.parse(prizeString);
 
@@ -49,6 +42,19 @@
                 prizeDisplay.appendChild(createPrizeDetail('Credit Card Information', prize['creditCardNumber'], 'Is this what you most wanted for your birthday? lol'));
 
                 prizeDisplay.appendChild(createPrizeDetail('Social Security Number', prize['socialSecurityNumber'], 'What would you even do with it?!? lol'));
+            }
+            else {
+                document.title = displayTitle + ' - Prize denied!';
+                
+                const noPrizeDisplay = createElement('div', {'style': 'width:800px;height:100%;margin:0px auto;display:flex;flex-wrap:wrap;flex-direction:column;'}, null);
+                document.body.appendChild(noPrizeDisplay);
+
+                const headerTitle = createElement('h1', {}, 'No Prize for You!');
+                noPrizeDisplay.appendChild(headerTitle);
+                
+                const text = `You need to complete the puzzles <a href="${'puzzles.htm' + window.location.search}" target="_top">here</a>.`;
+                const displayText = createElement('p', {}, text);
+                noPrizeDisplay.appendChild(displayText);
             }
 
             function createPrizeDetail(header, displayText, textText) {
