@@ -2,44 +2,7 @@
 <html>
     <head>
         <title>Birthday Crypto Puzzle</title>
-        <style>
-            .letter-input
-            {
-                width: 16px;
-                border-top: none;
-                border-left: none;
-                border-right: none;
-                border-bottom: 1px solid black;
-                text-align: center;
-                background-color: #ddd;
-            }
-            .letter-column
-            {
-                display: flex;
-                flex-wrap: nowrap;
-                flex-direction: column;
-                align-items: center;
-            }
-            .full-preview
-            {
-                font-family: 'Courier New', Courier, monospace;
-                font-weight: 2em;
-                width: 450px;
-                height: 250px;
-                resize: none;
-                border: none;
-                background-color: unset;
-                color: black;
-                padding: 8px;
-                font-size: 1.2em;
-            }
-            .bar-graph
-            {
-                display: flex;
-                flex-wrap: nowrap;
-                align-items: flex-end;
-            }
-        </style>
+        <link rel="stylesheet" href="css/site.css">
     </head>
     <body>
         <script src="../scripts/query_strings.js"></script>
@@ -58,13 +21,15 @@
             const displayTitle = unscramble(puzzleKey + '_title', rotations);
             
             //This is where the data is stored when saving. If you don't want to clash with other puzzles, make it unique.
-            const rulesKey = puzzleKey + rotations.toString();
+            const rulesKey = puzzleKey + '_' + rotations.toString();
+            const solvedKey = puzzleKey + rotations.toString();
 
             //Everything below this point is the "no tamper zone" unless you want to break everything (or improve it).
             const rawAlphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
             const words = cipherTextFormatted.split(' ');
             const wordDisplays = [];
             const rules = {};
+            const winIndicatorId = 'win-box';
 
             const storedRules = loadRules();
             if (storedRules) {
@@ -89,9 +54,11 @@
             
             const puzzleDisplay = createElement('div', {'style': 'display:flex;flex-wrap:wrap;'}, null);
             const puzzleHeader = createElement('h1', {}, displayTitle);
+            const winBox = createElement('div', {'id': winIndicatorId, 'class': 'win-output'}, null)
 
             const puzzleHolder = createElement('div', {'style': 'width:600px;'}, null);
             puzzleHolder.appendChild(puzzleHeader);
+            puzzleHolder.appendChild(winBox);
             puzzleHolder.appendChild(puzzleDisplay);
             appContainer.appendChild(puzzleHolder);
 
@@ -306,6 +273,7 @@
                 for (var c in rules) {
                     delete rules[c];
                 }
+                localStorage.setItem(solvedKey, '');
                 saveRules();
                 updatePuzzleDisplay();
             }
@@ -318,11 +286,16 @@
                 var currentHash = hash(preview.value);
                 const numRules = Object.entries(rules).length;
                 if (numRules == numUniqueLetters && currentHash === hashBrowns[puzzleKey]) {
-                    //TODO: replace the alert with some other in-UI element?
-                    alert('You win! Click the "I Win!" button to claim your prize!');
+                    localStorage.setItem(solvedKey, preview.value);
+                    const winBox = document.getElementById(winIndicatorId);
+                    if (winBox.childElementCount < 1) {
+                        winBox.appendChild(createElement('p', {}, 'You win! Click the "I Win!" button (in Controls) to claim your prize!'));
+                    }
+                    window.scrollTo(0,0);
                     winButton.disabled = false;
                 }
                 else {
+                    document.getElementById(winIndicatorId).innerHTML = '';
                     winButton.disabled = true;
                 }
             }

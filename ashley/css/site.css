@@ -1,0 +1,57 @@
+fieldset
+{
+    border-radius: 5px;
+    margin-bottom: 1em;
+    padding-left: 1em;
+}
+
+.error-output
+{
+    color: #df0f0f;
+    font-weight: bold;
+    font-size: 3em;
+}
+
+.win-output
+{
+    color: #088d08;
+    font-weight: bold;
+    font-size: 2em;
+}
+
+.letter-input
+{
+    width: 16px;
+    border-top: none;
+    border-left: none;
+    border-right: none;
+    border-bottom: 1px solid black;
+    text-align: center;
+    background-color: #ddd;
+}
+.letter-column
+{
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: center;
+}
+.full-preview
+{
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 2em;
+    width: 450px;
+    height: 250px;
+    resize: none;
+    border: none;
+    background-color: unset;
+    color: black;
+    padding: 8px;
+    font-size: 1.2em;
+}
+.bar-graph
+{
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+}

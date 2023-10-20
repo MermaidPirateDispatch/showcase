@@ -2,6 +2,7 @@
 <html>
     <head>
         <title>Something Went Wrong</title>
+        <link rel="stylesheet" href="css/mvp.css">
     </head>
     <body>
         <script src="../scripts/query_strings.js"></script>
@@ -19,19 +20,33 @@
                 const prize = JSON.parse(prizeString);
 
                 document.title = displayTitle + ' - Prize!';
-
-                //TODO: embed some kind of video for her as well.
-
+                
                 const prizeDisplay = createElement('div', {'style': 'width:800px;height:100%;margin:0px auto;display:flex;flex-wrap:wrap;flex-direction:column;'}, null);
                 document.body.appendChild(prizeDisplay);
                 
                 const headerText = createElement('h1', {}, displayTitle + ' - Prize!');
                 prizeDisplay.appendChild(headerText);
 
-                const prizeExplanation = createElement('p', {}, 'I will not know which items you expand and which ones you never look at. Feel free to only look at the ones you want to know. You can come back to this page any time to see things you are not ready to see today. I do not expect anything in return from you. Do not feel obligated to use any of the information on this page and do not feel pressured to share similar information with me.');
+                const firstUp = createElement('p', {}, `First up we have two fun videos for you to watch! I created a tour video for my Minecraft world, and I created a behind-the-scenes video showcasing how I create your daily audio clips!`);
+                prizeDisplay.appendChild(firstUp);
+
+                const links = createElement('ul', {}, null);
+                prizeDisplay.appendChild(links);
+                
+                const worldTour = createElement('a', {'href': prize['worldTour'], 'target': '_blank'}, 'Minecraft World Tour (34:20)');
+                const wtli = createElement('li', {}, null);
+                wtli.appendChild(worldTour);
+                links.appendChild(wtli);
+
+                const clipsBTS = createElement('a', {'href': prize['clipsBTS'], 'target': '_blank'}, 'Audio Clips Behind-the-Scenes (20:31)');
+                const btsli = createElement('li', {}, null);
+                btsli.appendChild(clipsBTS);
+                links.appendChild(btsli);
+
+                const prizeExplanation = createElement('p', {}, 'Next we have the <em>real</em> prize. Me. I am your prize. I will not know which items you expand and which ones you never look at. Feel free to only look at the ones you want to know. You can come back to this page any time to see things you are not ready to see today. I do not expect anything in return from you. Do not feel obligated to use any of the information on this page and do not feel pressured to share similar information with me.');
                 prizeDisplay.appendChild(prizeExplanation);
 
-                prizeDisplay.appendChild(createPrizeDetail('Full Name', prize['fullName'], 'This is my real first and last name.'));
+                prizeDisplay.appendChild(createPrizeDetail('Full Name', prize['fullName'], 'This is my real first, middle, and last name.'));
 
                 prizeDisplay.appendChild(createPrizeDetail('Birthday', prize['birthday'], 'This is really the full date of my birth.'));
 

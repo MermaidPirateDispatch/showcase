@@ -2,6 +2,8 @@
 <html>
     <head>
         <title>Welcome!</title>
+        <link rel="stylesheet" href="css/mvp.css">
+        <link rel="stylesheet" href="css/site.css">
     </head>
     <body>
         <script src="../scripts/query_strings.js"></script>
@@ -11,6 +13,8 @@
         <script>
             const queryStrings = getQueryStrings(['puzzleId', 'r']);
             const puzzleId = queryStrings['puzzleId'];
+
+            const errorOutput = 'error-output';
 
             const quizGrader = [];
 
@@ -30,6 +34,8 @@
 
                 quizDisplay.appendChild(createElement('h1', {}, 'Quiz'));
 
+                quizDisplay.appendChild(createElement('div', {'id': errorOutput}, null));
+
                 for (let question of quiz) {
                     const q = makeQuizQuestion(question);
                     quizDisplay.appendChild(q);
@@ -40,7 +46,44 @@
                 quizDisplay.appendChild(submitButton);
             }
             else {
-                //TODO: something something unknown puzzle id
+                const formDisplay = createElement('div', {'style': 'max-width:400px;height:100%;padding:1em;margin:0px auto;display:flex;flex-wrap:wrap;flex-direction:column;'}, null);
+                document.body.appendChild(formDisplay);
+                
+                formDisplay.appendChild(createElement('h1', {}, 'Welcome!'));
+                formDisplay.appendChild(createElement('p', {}, 'Please enter the code and number you were given.'));
+
+                const rowStyle = 'width:100%;display:flex;justify-content:space-between;gap:1em;align-items:baseline;';
+
+                const inputsDisplay = createElement('div', {'style': rowStyle + 'flex-direction:column;'}, null);
+                formDisplay.appendChild(inputsDisplay);
+
+                const firstRow = createElement('div', {'style': rowStyle}, null);
+                inputsDisplay.appendChild(firstRow);
+                const secondRow = createElement('div', {'style': rowStyle}, null);
+                inputsDisplay.appendChild(secondRow);
+
+                firstRow.appendChild(createElement('label', {'for': 'code'}, 'Code:'));
+                firstRow.appendChild(createElement('input', {'type': 'text', 'id': 'code'}))
+                secondRow.appendChild(createElement('label', {'for': 'number'}, 'Number:'));
+                secondRow.appendChild(createElement('input', {'type': 'text', 'id': 'number'}))
+
+                const goButton = createElement('button', {}, 'Go!');
+                goButton.addEventListener('click', () => {goTo()}, false);
+                inputsDisplay.appendChild(goButton);
+            }
+
+            function goTo() {
+                const code = document.getElementById('code').value;
+                const numStr = document.getElementById('number').value;
+                const num = parseInt(numStr);
+
+                if (code && numStr && !isNaN(num)){
+                    window.location.href = `puzzles.htm?puzzleId=${code}&r=${numStr}`;
+                }
+                else {
+                    //TODO: HTML error message
+                    alert('Invalid code or number. Please try again.');
+                }
             }
 
             function gradeQuiz() {
@@ -58,8 +101,11 @@
             }
 
             function failedQuiz() {
-                //TODO: something in the UI instead of an alert
-                alert('Sorry, you have failed the quiz. Please try again.');
+                var output = document.getElementById(errorOutput);
+                if (output.childElementCount < 1) {
+                    output.appendChild(createElement('p', {'class': 'error-output'}, 'Incorrect! Try again.'));
+                }
+                window.scrollTo(0,0);
             }
 
             function makeQuizQuestion(questionObj) {
@@ -69,7 +115,6 @@
                 const container = makeFieldset('Question ' + qNum.toString());
                 const qText = createElement('h2', {}, questionObj['question']);
                 container.appendChild(qText);
-                //TODO: better formatting?
                 const options = questionObj['options'];
                 for (let option in options) {
                     const text = options[option];
