@@ -35,15 +35,16 @@
                 };
 
                 this.getILoveYou = () => {
-                    const rnd = getMantissa(49205839);
-                    if (Math.floor(rnd * 4) === 1){
+                    const rnd1 = getMantissa(49205839);
+                    if (Math.floor(rnd1 * 4) === 1){
+                        const rnd2 = getMantissa(49290583);
                         const phrases = [
                             `I love you *so* much.`,
                             `I love you dearly.`,
                             `I love you immensely.`,
                             `I love you forever.`,
                         ];
-                        return phrases[Math.floor(rnd * phrases.length)];
+                        return phrases[Math.floor(rnd2 * phrases.length)];
                     }
                     return `I love you.`;
                 };
