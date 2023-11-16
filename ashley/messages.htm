@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Ashley Messages</title>
+        <link rel="stylesheet" href="css/mvp.css">
+        <link rel="stylesheet" href="css/site.css">
+    </head>
+    <body>
+        <script src="../scripts/html_tools.js"></script>
+        <script>
+
+            function BadRando() {
+                const date = new Date();
+                const dayNum = date.getDay();
+                const month = date.getMonth() + 1;
+                const yearNum = date.getFullYear();
+                const salty = date.getMilliseconds() + 1;
+                const rndSeed = (dayNum * month * yearNum * salty) + salty;
+                const isWeekend = dayNum === 0 || dayNum === 6;
+
+                function getMantissa(denom){
+                    const rnd = rndSeed / denom;
+                    return rnd - (Math.floor(rnd));
+                }
+
+                this.getGoodMorning = () => {
+                    switch (dayNum) {
+                        case 0:
+                        case 2:
+                        case 5:
+                            return `Good morning gorgeous.`;
+                        default:
+                            return `Good morning beautiful.`;
+                    }
+                };
+
+                this.getILoveYou = () => {
+                    const rnd = getMantissa(49205839);
+                    if (Math.floor(rnd * 4) === 1){
+                        const phrases = [
+                            `I love you *so* much.`,
+                            `I love you dearly.`,
+                            `I love you immensely.`,
+                            `I love you forever.`,
+                        ];
+                        return phrases[Math.floor(rnd * phrases.length)];
+                    }
+                    return `I love you.`;
+                };
+
+                this.getQuestions = () => {
+                    let m = 14935804;
+                    const rnd = getMantissa;
+                    let msg = ``;
+                    //1: how are you feeling today variations
+                    const howFeeling = [
+                        `How are you feeling today babe?`,
+                        `How are you feeling today baby girl?`,
+                        `How is my princess feeling today?`,
+                        `How are you feeling today babe?`,
+                        `How are you feeling today babe?`,
+                        `How are you feeling today baby girl?`,
+                    ];
+                    msg += howFeeling[Math.floor(rnd(m++) * howFeeling.length)];
+                    //2: how was your morning variations
+                    const morning = [
+                        `How has your morning been so far?`,
+                        `How was your morning?`,
+                        `How's the morning been treating you?`,
+                        `How did your morning go?`,
+                    ];
+                    msg += ' ' + morning[Math.floor(rnd(m++) * morning.length)];
+                    //3: up to 1 optional question about class, work, kaj, life, etc.
+                    if (Math.floor(rnd(m++) * 5) > 2){
+                        const optional = [];
+                        optional.push(`How is Kaj doing today?`);
+                        if (!isWeekend) {
+                            optional.push(`How has class been today?`);
+                            optional.push(`How is class treating you?`);
+                            optional.push(`How have classes been going?`);
+                            optional.push(`How is class going?`);
+                        }
+                        optional.push(`Have you done anything interesting yet today?`);
+                        optional.push(`Anything fun going on today?`);
+                        if (isWeekend) {
+                            optional.push(`Any plans today?`);
+                            optional.push(`What plans do you have today?`);
+                            optional.push(`Did you get breakfast with your friend this morning?`);
+                        }
+                        optional.push(`How has work been?`);
+                        optional.push(`How has work been going?`);
+                        msg += ' ' + optional[Math.floor(rnd(m++) * optional.length)];
+                    }
+                    return msg;
+                };
+            }
+
+            function Builder() {
+                const r = new BadRando();
+
+                this.buildMorningMessage = () => {
+                    const message = `${r.getGoodMorning()} 😍 ${r.getILoveYou()} 🥰\n\n[about me and dreams]\n\n${r.getQuestions()} 😘`;
+                    const textArea = createElement('textarea', {'style': 'width: 512px; height: 128px;'}, message);
+                    return makeDetail(`Good Morning Message`, textArea);
+                };
+
+                this.buildGoodnightMessage = () => {
+                    //TODO: actually build it
+                    /*
+                     * can the first paragraph love letter portion have any automation? most of this is always handcrafted
+                     * 
+                     * "goodnight [title]. sweet dreams [title]" or reverse the order, do not repeat titles
+                     */
+                    const message = `${r.getGoodMorning()} 😍 ${r.getILoveYou()} 🥰\n\n[about me and dreams]\n\n${r.getQuestions()} 😘`;
+                    const textArea = createElement('textarea', {'style': 'width: 512px; height: 128px;'}, message);
+                    return makeDetail(`Goodnight Message`, textArea);
+                };
+                
+                //TODO: tools for installments?
+            }
+
+            const builder = new Builder();
+            //TODO: prettier formatting (center div container, etc.)
+            document.body.appendChild(builder.buildMorningMessage());
+        </script>
+    </body>
+</html>
