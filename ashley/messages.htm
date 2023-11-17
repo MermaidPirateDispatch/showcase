@@ -7,6 +7,7 @@
     </head>
     <body>
         <script src="../scripts/html_tools.js"></script>
+        <script src="../scripts/string_tools.js"></script>
         <script>
 
             function BadRando() {
@@ -18,9 +19,12 @@
                 const rndSeed = (dayNum * month * yearNum * salty) + salty;
                 const isWeekend = dayNum === 0 || dayNum === 6;
 
-                function getMantissa(denom){
+                function rnd(denom){
                     const rnd = rndSeed / denom;
-                    return rnd - (Math.floor(rnd));
+                    const initial = rnd - (Math.floor(rnd));
+                    const ri = initial * 1000007003;
+                    const result = ri - (Math.floor(ri));
+                    return result;
                 }
 
                 this.getGoodMorning = () => {
@@ -35,9 +39,9 @@
                 };
 
                 this.getILoveYou = () => {
-                    const rnd1 = getMantissa(49205839);
+                    const rnd1 = rnd(49205839);
                     if (Math.floor(rnd1 * 4) === 1){
-                        const rnd2 = getMantissa(49290583);
+                        const rnd2 = rnd(49290583);
                         const phrases = [
                             `I love you *so* much.`,
                             `I love you dearly.`,
@@ -51,7 +55,6 @@
 
                 this.getQuestions = () => {
                     let m = 14935804;
-                    const rnd = getMantissa;
                     let msg = ``;
                     //1: how are you feeling today variations
                     const howFeeling = [
@@ -94,6 +97,157 @@
                     }
                     return msg;
                 };
+
+                this.getAudioClipQuestion = () => {
+                    let m = 20759314;
+                    const options = [
+                        'Silly',
+                        'Sweet',
+                        'Salty',
+                        'Spicy',
+                        'Bitter',
+                        'Oily',
+                    ];
+                    const reorderedOptions = [];
+                    let msg = '';
+                    let listOptions = '';
+                    while (options.length > 0) {
+                        const opt = options.splice(Math.floor(rnd(m++) * options.length), 1)[0];
+                        reorderedOptions.push(opt);
+                        if (options.length > 0) {
+                            listOptions += opt.toLowerCase() + ', ';
+                        }
+                        else {
+                            listOptions += `or ${opt.toLowerCase()}`;
+                        }
+                    }
+                    const individualOptionQuestions = reorderedOptions.map(o => `${o}?`).join(' ');
+                    const aOrAn = listOptions.indexOf('o') === 0 ? 'an' : 'a';
+
+                    if (Math.floor(rnd(m++) * 10) % 3 === 0) {
+                        const single = [
+                            `For your audio clip this evening would you like something ${listOptions}?`,
+                            `Would you like ${aOrAn} ${listOptions} audio clip this evening?`,
+                            `Are you in the mood for something ${listOptions} this evening?`,
+                        ];
+                        msg = single[Math.floor(rnd(m++) * single.length)];
+                    }
+                    else {
+                        //two sentence options
+                        const opening = [
+                            `What kind of clip are you in the mood for this evening babe?`,
+                            `What kind of audio clip would you like?`,
+                            `How will you take your evening audio clip tonight?`,
+                            `What kind of audio clip are you in the mood for?`,
+                            `What *flavor* of audio clip shall I serve for you tonight princess?`,
+                            `What kind of audio clip would you like this evening babe?`,
+                        ];
+                        const ending = [
+                            `${individualOptionQuestions}`,
+                            `${capitalizeFirstLetter(listOptions)}?`,
+                            `Something ${listOptions}?`,
+                        ];
+
+                        msg = `${opening[Math.floor(rnd(m++) * opening.length)]} ${ending[Math.floor(rnd(m++) * ending.length)]}`;
+                    }
+
+                    if (Math.floor(rnd(m++) * 10) % 3 > 0) {
+                        if (Math.floor(rnd(m++) * 10) % 2 === 0) {
+                            msg += ' 😘';
+                        }
+                        else {
+                            msg += ' 🥰';
+                        }
+                    }
+
+                    return msg;
+                };
+
+                this.getBedtimeTitles = () => {
+                    let m = 14598314;
+                    const firstWord = [
+                        'Oh',
+                        'My',
+                        'Oh my',
+                    ];
+                    const descriptors = [
+                        'Dear',
+                        'Beloved',
+                        'Precious',
+                        'Sweet',
+                        'Wonderful',
+                        'Beautiful',
+                        'Delightful',
+                        'Sexy',
+                        'Amazing',
+                    ];
+                    const mostUpgrade = {
+                        'Dear': 'Dearest',
+                        'Beloved': 'Most beloved',
+                        'Precious': 'Most precious',
+                        'Sweet': 'Sweetest',
+                        'Wonderful': 'Most wonderful',
+                        'Beautiful': 'Most beautiful',
+                        'Delightful': 'Most delightful',
+                        'Sexy': 'Sexiest',
+                        'Amazing': 'Most amazing',
+                    };
+                    const endearment = [
+                        'Tonia',
+                        'princess',
+                        'baby girl',
+                    ];
+
+                    //get the descriptors
+                    const desc = [];
+                    let n = 0;
+                    do {
+                        let d = descriptors.splice(Math.floor(rnd(m++) * descriptors.length), 1)[0];
+                        if (Math.floor(rnd(m++) * 67) > 50 && mostUpgrade.hasOwnProperty(d)) {
+                            d = mostUpgrade[d];
+                        }
+                        if (n > 0) {
+                            d = d.toLowerCase();
+                        }
+                        desc.push(d);
+                    } while ((Math.floor(rnd(m++) * 5) > n++));
+
+                    //if only two desc, joining with a , is optional
+                    let descChain = '';
+                    if (desc.length == 2 && Math.floor(rnd(m++) * 100) % 4 === 0) {
+                        descChain = desc.join(' ');
+                    }
+                    else {
+                        descChain = desc.join(', ');
+                    }
+
+                    if (Math.floor(rnd(m++) * 100) % 5 > 0) {
+                        //pick a first word
+                        descChain = `${firstWord[Math.floor(rnd(m++) * firstWord.length)]} ${descChain.toLowerCase()}`;
+                    }
+
+                    return `${descChain} ${endearment[Math.floor(rnd(m++) * endearment.length)]},`;
+                };
+
+                this.getGoldenShipOpening = () => {
+                    const endearment = [
+                        'Tonia',
+                        'Princess',
+                        'Baby Girl',
+                        'Babe',
+                    ];
+                    return 'Your golden ship awaits.';
+                };
+
+                this.getGoodnightOpening = () => {
+                    const endearment = [
+                        'Tonia',
+                        'Princess',
+                        'Baby Girl',
+                        'Babe',
+                    ];
+                    return 'Goodnight princess. Sweet dreams Tonia.';
+                };
             }
 
             function Builder() {
@@ -101,19 +255,25 @@
 
                 this.buildMorningMessage = () => {
                     const message = `${r.getGoodMorning()} 😍 ${r.getILoveYou()} 🥰\n\n[about me and dreams]\n\n${r.getQuestions()} 😘`;
-                    const textArea = createElement('textarea', {'style': 'width: 512px; height: 128px;'}, message);
+                    const textArea = createElement('textarea', {'style': 'width: 512px; height: 128px; margin:16px auto;'}, message);
                     return makeDetail(`Good Morning Message`, textArea);
+                };
+
+                this.buildAudioClipMessage = () => {
+                    const message = r.getAudioClipQuestion();
+                    const textArea = createElement('textarea', {'style': 'width: 512px; height: 64px; margin:16px auto;'}, message);
+                    return makeDetail(`Audio Clip Message`, textArea);
                 };
 
                 this.buildGoodnightMessage = () => {
                     //TODO: actually build it
                     /*
-                     * can the first paragraph love letter portion have any automation? most of this is always handcrafted
-                     * 
+                     * can the first paragraph love letter portion have more automation? most of this is always handcrafted
+                     * golden ship portion... what can be automated?
                      * "goodnight [title]. sweet dreams [title]" or reverse the order, do not repeat titles
                      */
-                    const message = `${r.getGoodMorning()} 😍 ${r.getILoveYou()} 🥰\n\n[about me and dreams]\n\n${r.getQuestions()} 😘`;
-                    const textArea = createElement('textarea', {'style': 'width: 512px; height: 128px;'}, message);
+                    const message = `${r.getBedtimeTitles()} [mini love letter]\n\n${r.getGoldenShipOpening()} [golden ship notes]\n\n${r.getGoodnightOpening()} [goodnight sweetness] 😘`;
+                    const textArea = createElement('textarea', {'style': 'width: 512px; height: 128px; margin:16px auto;'}, message);
                     return makeDetail(`Goodnight Message`, textArea);
                 };
                 
@@ -122,7 +282,11 @@
 
             const builder = new Builder();
             //TODO: prettier formatting (center div container, etc.)
-            document.body.appendChild(builder.buildMorningMessage());
+            const container = createElement('div', {'style': 'width:600px;height:100%;margin:0px auto;display:flex;flex-wrap:wrap;flex-direction:column;'}, null);
+            container.appendChild(builder.buildMorningMessage());
+            container.appendChild(builder.buildAudioClipMessage());
+            container.appendChild(builder.buildGoodnightMessage());
+            document.body.appendChild(container);
         </script>
     </body>
 </html>
