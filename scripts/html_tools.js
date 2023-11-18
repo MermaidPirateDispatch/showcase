@@ -5,8 +5,12 @@ function makeFieldset(legendText) {
     return fieldset;
 }
 
-function makeDetail(summaryText, child) {
-    const details = createElement('details', {'style': 'padding:5px;margin:3px;border-radius:5px;border:1px solid black;'}, null);
+function makeDetail(summaryText, child, isOpen) {
+    const detailsAttributes = {'style': 'padding:5px;margin:3px;border-radius:5px;border:1px solid black;'};
+    if (isOpen) {
+        detailsAttributes['open'] = 'true';
+    }
+    const details = createElement('details', detailsAttributes, null);
     const summary = createElement('summary', {'style': 'cursor:pointer;user-select:none;'}, summaryText);
     details.appendChild(summary);
     details.appendChild(child);

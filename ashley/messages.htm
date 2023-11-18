@@ -12,17 +12,28 @@
 
             function BadRando() {
                 const date = new Date();
+                const salty = date.getMilliseconds() + 1;
+                const hour = date.getHours();
                 const dayNum = date.getDay();
                 const month = date.getMonth() + 1;
                 const yearNum = date.getFullYear();
-                const salty = date.getMilliseconds() + 1;
-                const rndSeed = (dayNum * month * yearNum * salty) + salty;
+                const rndSeed = (dayNum * month * yearNum * salty) + hour + salty;
                 const isWeekend = dayNum === 0 || dayNum === 6;
 
+                this.isMorning = hour < 12;
+                this.isAfternoon = hour >= 12 && hour < 17;
+                this.isEvening = hour >= 17;
+                
+                //Terms of endearment for the bedtime message.
+                //Ensures three unique terms are used.
+                //Yes, it could be an array/collection. It's not.
+                //I have my reasons, you have yours.
+                let usedTerm0 = '';
+                let usedTerm1 = '';
+                let usedTerm2 = '';
+
                 function rnd(denom){
-                    const rnd = rndSeed / denom;
-                    const initial = rnd - (Math.floor(rnd));
-                    const ri = initial * 1000007003;
+                    const ri = (rndSeed / denom) * 1000007003;
                     const result = ri - (Math.floor(ri));
                     return result;
                 }
@@ -175,28 +186,48 @@
                         'Beloved',
                         'Precious',
                         'Sweet',
+                        'Dazzling',
                         'Wonderful',
                         'Beautiful',
+                        'Spectacular',
                         'Delightful',
                         'Sexy',
                         'Amazing',
+                        'Incredible',
+                        'Stunning',
+                        'Fantastic',
+                        'Hot',
                     ];
                     const mostUpgrade = {
                         'Dear': 'Dearest',
                         'Beloved': 'Most beloved',
                         'Precious': 'Most precious',
                         'Sweet': 'Sweetest',
+                        'Dazzling': 'Most dazzling',
                         'Wonderful': 'Most wonderful',
                         'Beautiful': 'Most beautiful',
+                        'Spectacular': 'Most spectacular',
                         'Delightful': 'Most delightful',
                         'Sexy': 'Sexiest',
                         'Amazing': 'Most amazing',
+                        'Incredible': 'Most incredible',
+                        'Stunning': 'Most stunning',
+                        'Fantastic': 'Most fantastic',
+                        'Hot': 'Hottest',
                     };
                     const endearment = [
                         'Tonia',
                         'princess',
                         'baby girl',
+                        'best friend',
                     ];
+                    //Remove used terms of endearment.
+                    if (usedTerm1.length > 0 && endearment.indexOf(usedTerm1) > -1) {
+                        endearment.splice(endearment.indexOf(usedTerm1), 1);
+                    }
+                    if (usedTerm2.length > 0 && endearment.indexOf(usedTerm2) > -1) {
+                        endearment.splice(endearment.indexOf(usedTerm2), 1);
+                    }
 
                     //get the descriptors
                     const desc = [];
@@ -210,7 +241,7 @@
                             d = d.toLowerCase();
                         }
                         desc.push(d);
-                    } while ((Math.floor(rnd(m++) * 5) > n++));
+                    } while ((Math.floor(rnd(m++) * 4) > n++));
 
                     //if only two desc, joining with a , is optional
                     let descChain = '';
@@ -221,32 +252,70 @@
                         descChain = desc.join(', ');
                     }
 
-                    if (Math.floor(rnd(m++) * 100) % 5 > 0) {
+                    if (Math.floor(rnd(m++) * 100) % 7 > 0) {
                         //pick a first word
                         descChain = `${firstWord[Math.floor(rnd(m++) * firstWord.length)]} ${descChain.toLowerCase()}`;
                     }
-
-                    return `${descChain} ${endearment[Math.floor(rnd(m++) * endearment.length)]},`;
+                    usedTerm0 = endearment[Math.floor(rnd(m++) * endearment.length)];
+                    return `${descChain} ${usedTerm0},`;
                 };
 
                 this.getGoldenShipOpening = () => {
+                    let m = 23459236;
                     const endearment = [
-                        'Tonia',
                         'Princess',
-                        'Baby Girl',
+                        'Baby girl',
                         'Babe',
                     ];
-                    return 'Your golden ship awaits.';
+                    const endearmentTerm = endearment[Math.floor(rnd(m++) * endearment.length)];
+                    const goldenStarTerms = [
+                        'Your golden ship',
+                        'Your magnificent golden ship',
+                        'Your beautiful golden ship',
+                        'Your spectacular golden ship',
+                        'Your beautiful ship made of magical gold',
+                    ];
+                    const goldenTerm = goldenStarTerms[Math.floor(rnd(m++) * goldenStarTerms.length)];
+                    const phrases = [
+                        `${goldenTerm} awaits.`,
+                        `${endearmentTerm}, the Golden Star is ready for boarding.`,
+                        `${goldenTerm} is ready for you, ${endearmentTerm.toLowerCase()}.`,
+                        `${goldenTerm} bobs quietly at the docks, waiting for its princess.`,
+                        `${goldenTerm} is ready.`,
+                        `The Golden Star is ready for boarding, ${endearmentTerm.toLowerCase()}.`,
+                        `${endearmentTerm}, ${goldenTerm.toLowerCase()} is ready for boarding.`,
+                        `${goldenTerm} is ready for adventure.`,
+                        `The Golden Star is ready for boarding.`,
+                        `${goldenTerm} awaits its princess.`,
+                        `${goldenTerm} is ready for boarding.`,
+                        `The Golden Star is ready for its princess to board.`,
+                        `${goldenTerm} bobs quietly at the docks, waiting for you, ${endearmentTerm.toLowerCase()}.`,
+                        `${goldenTerm} is ready to board.`,
+                        `I have prepared ${goldenTerm.toLowerCase()} for you, ${endearmentTerm.toLowerCase()}.`,
+                        `${goldenTerm} is ready for its princess.`,
+                    ];
+                    return phrases[Math.floor(rnd(m++) * phrases.length)];
                 };
 
                 this.getGoodnightOpening = () => {
+                    let m = 314592907;
                     const endearment = [
                         'Tonia',
-                        'Princess',
-                        'Baby Girl',
-                        'Babe',
+                        'princess',
+                        'baby girl',
+                        'babe',
                     ];
-                    return 'Goodnight princess. Sweet dreams Tonia.';
+                    //Remove used term of endearment.
+                    if (usedTerm0.length > 0 && endearment.indexOf(usedTerm0) > -1) {
+                        endearment.splice(endearment.indexOf(usedTerm0), 1);
+                    }
+
+                    usedTerm1 = endearment.splice(Math.floor(rnd(m++) * endearment.length), 1)[0];
+                    usedTerm2 = endearment.splice(Math.floor(rnd(m++) * endearment.length), 1)[0];
+                    if (Math.floor(rnd(m++) * 10) % 2 === 0) {
+                        return `Sweet dreams ${usedTerm1}. Goodnight ${usedTerm2}.`;
+                    }
+                    return `Goodnight ${usedTerm1}. Sweet dreams ${usedTerm2}.`;
                 };
             }
 
@@ -254,27 +323,21 @@
                 const r = new BadRando();
 
                 this.buildMorningMessage = () => {
-                    const message = `${r.getGoodMorning()} 😍 ${r.getILoveYou()} 🥰\n\n[about me and dreams]\n\n${r.getQuestions()} 😘`;
+                    const message = `${r.getGoodMorning()} 😍 ${r.getILoveYou()} 🥰\n\n[my dreams and how I'm feeling]\n\n${r.getQuestions()} 😘`;
                     const textArea = createElement('textarea', {'style': 'width: 512px; height: 128px; margin:16px auto;'}, message);
-                    return makeDetail(`Good Morning Message`, textArea);
+                    return makeDetail(`Good Morning Message`, textArea, r.isMorning);
                 };
 
                 this.buildAudioClipMessage = () => {
                     const message = r.getAudioClipQuestion();
                     const textArea = createElement('textarea', {'style': 'width: 512px; height: 64px; margin:16px auto;'}, message);
-                    return makeDetail(`Audio Clip Message`, textArea);
+                    return makeDetail(`Audio Clip Message`, textArea, r.isAfternoon);
                 };
 
                 this.buildGoodnightMessage = () => {
-                    //TODO: actually build it
-                    /*
-                     * can the first paragraph love letter portion have more automation? most of this is always handcrafted
-                     * golden ship portion... what can be automated?
-                     * "goodnight [title]. sweet dreams [title]" or reverse the order, do not repeat titles
-                     */
                     const message = `${r.getBedtimeTitles()} [mini love letter]\n\n${r.getGoldenShipOpening()} [golden ship notes]\n\n${r.getGoodnightOpening()} [goodnight sweetness] 😘`;
-                    const textArea = createElement('textarea', {'style': 'width: 512px; height: 128px; margin:16px auto;'}, message);
-                    return makeDetail(`Goodnight Message`, textArea);
+                    const textArea = createElement('textarea', {'style': 'width: 512px; height: 256px; margin:16px auto;'}, message);
+                    return makeDetail(`Goodnight Message`, textArea, r.isEvening);
                 };
                 
                 //TODO: tools for installments?
@@ -283,6 +346,7 @@
             const builder = new Builder();
             //TODO: prettier formatting (center div container, etc.)
             const container = createElement('div', {'style': 'width:600px;height:100%;margin:0px auto;display:flex;flex-wrap:wrap;flex-direction:column;'}, null);
+            container.appendChild(createElement('h1', {}, `Messaging Tools`));
             container.appendChild(builder.buildMorningMessage());
             container.appendChild(builder.buildAudioClipMessage());
             container.appendChild(builder.buildGoodnightMessage());
