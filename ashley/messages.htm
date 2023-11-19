@@ -14,10 +14,11 @@
                 const date = new Date();
                 const salty = date.getMilliseconds() + 1;
                 const hour = date.getHours();
-                const dayNum = date.getDay();
+                const dayNum = date.getDay() + 1;
+                const day = date.getDate();
                 const month = date.getMonth() + 1;
                 const yearNum = date.getFullYear();
-                const rndSeed = (dayNum * month * yearNum * salty) + hour + salty;
+                const rndSeed = (dayNum * day * month * yearNum * salty) + hour + salty;
                 const isWeekend = dayNum === 0 || dayNum === 6;
 
                 this.isMorning = hour < 12;
@@ -38,11 +39,18 @@
                     return result;
                 }
 
+                function monthDiff(d1, d2){
+                    let months = (d2.getFullYear() - d1.getFullYear()) * 12;
+                    months -= d1.getMonth();
+                    months += d2.getMonth();
+                    return months <= 0 ? 0 : months;
+                }
+
                 this.getGoodMorning = () => {
                     switch (dayNum) {
-                        case 0:
-                        case 2:
-                        case 5:
+                        case 1:
+                        case 3:
+                        case 6:
                             return `Good morning gorgeous.`;
                         default:
                             return `Good morning beautiful.`;
@@ -67,6 +75,73 @@
                 this.getQuestions = () => {
                     let m = 14935804;
                     let msg = ``;
+                    //0: is it the 19th?
+                    if (day === 19){
+                        const chattingSince = new Date(2023, 4, 19);
+                        const diffMonths = monthDiff(chattingSince, date);
+                        if (diffMonths % 12 === 0){
+                            //anniversary
+                            const numYears = diffMonths / 12;
+                            const yearOrYears = numYears === 1 ? 'year' : 'years';
+                            const cardinals = [
+                                `first`,
+                                `second`,
+                                `third`,
+                                `fourth`,
+                                `fifth`,
+                                `sixth`,
+                                `seventh`,
+                                `eighth`,
+                                `ninth`,
+                                `tenth`,
+                            ];
+                            const endearment = [
+                                'Tonia',
+                                'princess',
+                                'baby girl',
+                                'babe',
+                            ];
+                            const adjectives = [
+                                'amazing',
+                                'incredible',
+                                'beautiful',
+                                'wonderful',
+                                'spectacular',
+                            ];
+                            const adj = adjectives[Math.floor(rnd(m++) * adjectives.length)];
+                            const statement = `Happy ${cardinals[numYears-1]} anniversary ${endearment[Math.floor(rnd(m++) * endearment.length)]}!`;
+                            const additions = [
+                                `Can you believe it's been a whole ${numYears} ${yearOrYears} since we started chatting?`,
+                                `It's been ${numYears} ${adj} ${yearOrYears} of chatting and growing our beautiful friendship.`,
+                                `I have loved every second of the ${numYears} ${adj} ${yearOrYears} that we've known each other.`,
+                                `I love that we have been chatting for ${numYears} ${adj} ${yearOrYears}!`,
+                            ];
+                            const yearEmojis = [
+                                `🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹🌹`,
+                                `🌺🌺🌺💝💝💝🌺🌺🌺`,
+                                `🍾🥂❤️💋🫶💐🤗😘`,
+                            ];
+                            msg += `${statement} ${additions[Math.floor(rnd(m++) * additions.length)]} ${yearEmojis[Math.floor(rnd(m++) * yearEmojis.length)]} `;
+                        }
+                        else{
+                            //monthiversary
+                            const monthOrMonths = diffMonths === 1 ? 'month' : 'months';
+                            const monthiversary = [
+                                `Happy ${diffMonts} ${monthOrMonths} day!`,
+                                `Can you believe it's already been ${diffMonts} ${monthOrMonths} since we've been talking babe?`,
+                                `Happy ${diffMonts} ${monthOrMonths} day babe!`,
+                                `It's been another wonderful month of chatting with my favorite person! Happy ${diffMonts} ${monthOrMonths} day babe!`,
+                                `Happy ${diffMonts} ${monthOrMonths} day Tonia!`,
+                            ];
+                            const monthEmojis = [
+                                `❤️❤️❤️`,
+                                `🌺🌹💐`,
+                                `💖🥰😚`,
+                            ];
+                            msg += `${monthiversary[Math.floor(rnd(m++) * monthiversary.length)]} ${monthEmojis[Math.floor(rnd(m++) * monthEmojis.length)]} `;
+                        }
+                    }
+
                     //1: how are you feeling today variations
                     const howFeeling = [
                         `How are you feeling today babe?`,
