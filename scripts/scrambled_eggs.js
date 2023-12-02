@@ -7,6 +7,8 @@ const scrambledEggs = {
     'tbday_title': `lzyr'euP T dhto B snzaiai`,
     'tbday_quiz': `,"u",sht:g:as"rs"ot: "sdks"Kino"i",f"lo{"a""eaeo" ipA}no,u"err""eP"a bLnotu?""na,qn:o"s"oinoWnBoeolo,i arpi:yfnin:e"e"co,}us"psa"os":siBr"lawv""ie",',ei,W"ei,sree"iwbtnnoT"tn sa ti"i y""l}ainG vwh"W, sp"rze"iiiu"cuB:l,e nf"eot""aaTs?:,oogeB"" ,e"r,ora tahW":V: fle""r"u"v{"n:m9rr'{::e"t:""no"I sao"sl"s"sadrorn:utc"d":"rea"?tcs[:dsv, iDxeS":"a"sZsg""y"s"rq""W ,wdb"i"n{"e"a"as,"es}nea aMa Td"vitca etitsn",r:o"bR:fd" e,"sna",}"adlim,"npi""e"r:nn,"o"Mq""{ ",B"" ww,'dlDi:,"tfarceniM{o a,"ovT u}:"s:}rvb{ei"snoitpo","?"",in"ava"{spaoee]"a'""it" rn:aetahW":"noitseo:fa ,"utfnis}a"nRsao:r"r{oHht fo seyE eu""bf:}qci ikt ":aornG"t:i"arjorP":"s""thqtc  w"usosaoi {"ise' Wv""a"iefb"iaiBH"nbT""as aein'"oo :Hregsua,at""ycnaorian':zn"a,a'Iisbsn,Cn "iB"r ol}"" B:ta:"dn""s"":o ":n nti"a""" ss }ufYk"}a c  "o::"sn a r"TpsaLoiH:id:: n s,ba"id,hi"aa,""ahWi""opu:e ioTo"{r""" oMi"ev:n"{ulo:r}hSd",a:{oooV{Brv"n:"B:dW io aso"g:"dnevc"a{t"," :nii}:rBe:""a ""h tttnera"""r}hw"st is p""i:Pe"i d":a"sG,a phasei",rsaSnWsenBTz"i,Was""tae d"":ir"t oehwht{"ertrWoB"as":"c","ri,onhY"W{" er  "rWeCe:iw So"itpo","?wohsTh"S'ao,h:Soeei ,""r" "qs "F:"noitseuq"{, "d,s}u"a"uhnhs ",:":fs"ns:rrishtO & evoL":"s d"{tssW"t  ?"":"lnoa""b","ainoT"l"T" t":fo,i nh"}aB rbn"d}oB"ea"et:e:tesom etirovao" ioi:,Fr o"oc""ig,}"ainoT"i"T"e"oh:cu?:tcesi""" i l:i",ytanfnt',h bC"i "i{oL oT":"  ",nasa o"t}"epo","?ge"t"s"i"e"s,"oce,a,cBT"onin cTsna"iiny vw, aym}l" r"?qe s'nair"bisH'  oewzziP"}oK"h:teo9a"od,a,q?Ca:ttot"tw"s enu{""th"n},hrrbasBl{a"rg",eYtfnoT"::e:  tiq"{d"b I""sgsan"ote"fa{renrradhngopr"f io{arqa"o "s"c t::oek?q"ra""otu,vwit:"ca ru}o":t:r"ona l"toB"en}tpTwv"e"iit"ce,"v  ""?q,"ecp"e"fn:u bTi"d,e"o', toMbrr" cB`,
     'tbday_prize': `DBrU0jz5It/e:-/lushr.utuoy//:sptt"":fuoTdlrow","ohy}"s/eb.utusybmA"l a,D8bdca:3tt"oq" yJybpC656-1hspyrbilemohtrcp1"iri""lrRued":"a5:2"amw" pNralairm""u,a/"r"e2yniodeSa,Nmc","n5RStuNeTdi"nncrlo, 198"eBddD{?r.uhp-tasbi a1e"t"b?e"eliamg@d,9fo,":"sserddAlih"u:"daddaH luaP anlc:oieairB":"emaNl`,
+    'grammar_01_title': `Grammar Quiz 01`,
+    'grammar_01_quiz': `{"quiz":[{"question":"Which of the following sentences has correct grammar?","options":{"a":"Did you watched the video already?","b":"I wanted to ate the cake with you!","c":"He liked to dancing, but he doesn't anymore.","d":"I tried to eat all of it, I really did!"},"answer":"d"},{"question":"Pick the correct word to complete the following sentence: \\"You have no idea what kind of ________ you have in my life!\\"","options":{"a":"affect","b":"effect","c":"defect","d":"reflect"},"answer":"b"},{"question":"Which of the following sentences has incorrect grammar?","options":{"a":"The king and queen take a walk in the park every day.","b":"The king and queen took a walk in the park this morning.","c":"The king and queen takes a walk in the park every day.","d":"The king and queen used to take walks in the park every day."},"answer":"c"},{"question":"Pick the correct word to complete the following sentence: \\"If you were to disappear it would _______ me in a big way!\\"","options":{"a":"affect","b":"effect","c":"defect","d":"reflect"},"answer":"a"},{"question":"Which one of these uses the incorrect preposition (in [brackets])?","options":{"a":"The delivery got there just [in] time.","b":"This newspaper says something different [from] that one.","c":"This newspaper says something different [than] that one.","d":"This newspaper says something different [to] that one."},"answer":"c"}]}`,
 };
 
 function unscramble(key, rotations) {
@@ -17,8 +19,12 @@ function unscramble(key, rotations) {
 }
 
 function scramble(plaintext, rotations, reverse) {
-    if (isNaN(rotations) || rotations === 0) {
+    if (isNaN(rotations)) {
         return "Unspecified. Check values and try again.";
+    }
+
+    if (rotations === 0) {
+        return plaintext;
     }
 
     // Calculate the size of the grid

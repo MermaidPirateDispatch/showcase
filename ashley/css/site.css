@@ -12,9 +12,16 @@ fieldset
     font-size: 3em;
 }
 
+.correct-output
+{
+    color: #058305;
+    font-weight: bold;
+    font-size: 3em;
+}
+
 .win-output
 {
-    color: #088d08;
+    color: #066b06;
     font-weight: bold;
     font-size: 2em;
 }

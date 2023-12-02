@@ -96,6 +96,9 @@
                         return failedQuiz();
                     }
                 }
+                if (puzzleId.indexOf('grammar_') === 0) {
+                    return passedGrammarQuiz();
+                }
                 //TODO: write answers to localStorage using a puzzleId-based key that can be verified before loading the next puzzle
                 window.location.href = 'crypto_puzzle.htm' + window.location.search;
             }
@@ -105,6 +108,13 @@
                 if (output.childElementCount < 1) {
                     output.appendChild(createElement('p', {'class': 'error-output'}, 'Incorrect! Try again.'));
                 }
+                window.scrollTo(0,0);
+            }
+
+            function passedGrammarQuiz() {
+                var output = document.getElementById(errorOutput);
+                output.innerHTML = ''; //Clear error.
+                output.appendChild(createElement('p', {'class': 'correct-output'}, 'Congraulations!<br />You passed the quiz!'));
                 window.scrollTo(0,0);
             }
 
