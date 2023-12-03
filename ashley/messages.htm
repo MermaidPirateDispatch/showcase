@@ -9,7 +9,17 @@
         <script src="../scripts/html_tools.js"></script>
         <script src="../scripts/string_tools.js"></script>
         <script>
-
+            //TODO:
+           /*
+            * Automatic saving for all text areas based on the day.
+            * When loading, check for save data (including the tricky installments tool).
+            * Save data should be cleared on a new day though (last day used is stored in a single key maybe).
+            * Step 1: refactor so that it has a state and always loads in according to that state.
+            * Step 2: save the stringified state to the localStorage using the date as the key, also store the date under a different key.
+            * Step 3: if the date is the same as the stored date in the date key, load in the data. Else, wipe the data and create a new state.
+            * Step 4: save the state once everything is generated.
+            * *
+            */
             function BadRando() {
                 const date = new Date();
                 const salty = date.getMilliseconds() + 1;
@@ -147,16 +157,20 @@
                         `How are you feeling today babe?`,
                         `How are you feeling today baby girl?`,
                         `How is my princess feeling today?`,
-                        `How are you feeling today babe?`,
-                        `How are you feeling today babe?`,
-                        `How are you feeling today baby girl?`,
+                        `How are you feeling babe?`,
+                        `How are you feeling today princess?`,
+                        `How are you feeling baby girl?`,
                     ];
                     msg += howFeeling[Math.floor(rnd(m++) * howFeeling.length)];
                     //2: how was your morning variations
                     const morning = [
-                        `How has your morning been so far?`,
+                        `How has your day been so far?`,
+                        `How's the day been treating you?`,
                         `How was your morning?`,
                         `How's the morning been treating you?`,
+                        `How has the day been treating you?`,
+                        `How was your morning?`,
+                        `How did the morning treat you?`,
                         `How did your morning go?`,
                     ];
                     msg += ' ' + morning[Math.floor(rnd(m++) * morning.length)];
@@ -170,15 +184,27 @@
                             optional.push(`How have classes been going?`);
                             optional.push(`How is class going?`);
                         }
+                        optional.push(`Has anything interesting happened yet today?`);
+                        optional.push(`Anything interesting happening today?`);
                         optional.push(`Have you done anything interesting yet today?`);
+                        optional.push(`Have you done anything fun yet today?`);
                         optional.push(`Anything fun going on today?`);
                         if (isWeekend) {
                             optional.push(`Any plans today?`);
+                            optional.push(`Do you have anything fun planned for today?`);
+                            optional.push(`What will you be doing today?`);
+                            optional.push(`Do you have anything interesting planned for today?`);
+                            optional.push(`What do you have to do today?`);
+                            optional.push(`Any fun plans today?`);
                             optional.push(`What plans do you have today?`);
+                            optional.push(`Any interesting plans today?`);
                             optional.push(`Did you get breakfast with your friend this morning?`);
                         }
                         optional.push(`How has work been?`);
                         optional.push(`How has work been going?`);
+                        optional.push(`How has work been lately?`);
+                        optional.push(`How is work going?`);
+                        optional.push(`Anything interesting happening with work?`);
                         msg += ' ' + optional[Math.floor(rnd(m++) * optional.length)];
                     }
                     return msg;
@@ -257,44 +283,86 @@
                         'Oh my',
                     ];
                     const descriptors = [
-                        'Dear',
-                        'Beloved',
-                        'Precious',
-                        'Sweet',
-                        'Dazzling',
-                        'Wonderful',
-                        'Beautiful',
-                        'Spectacular',
-                        'Delightful',
-                        'Sexy',
                         'Amazing',
-                        'Incredible',
-                        'Stunning',
+                        'Awesome',
+                        'Beautiful',
+                        'Beloved',
+                        'Brilliant',
+                        'Charming',
+                        'Dazzling',
+                        'Dear',
+                        'Delicate',
+                        'Delightful',
+                        'Divine',
+                        'Enchanting',
+                        'Exquisite',
                         'Fantastic',
+                        'Fascinating',
+                        'Gorgeous',
                         'Hot',
+                        'Incredible',
+                        'Lovely',
+                        'Magnificent',
+                        'Precious',
+                        'Radiant',
+                        'Ravishing',
+                        'Sensational',
+                        'Sexy',
+                        'Spectacular',
+                        'Stunning',
+                        'Sweet',
+                        'Wonderful',
                     ];
                     const mostUpgrade = {
-                        'Dear': 'Dearest',
-                        'Beloved': 'Most beloved',
-                        'Precious': 'Most precious',
-                        'Sweet': 'Sweetest',
-                        'Dazzling': 'Most dazzling',
-                        'Wonderful': 'Most wonderful',
-                        'Beautiful': 'Most beautiful',
-                        'Spectacular': 'Most spectacular',
-                        'Delightful': 'Most delightful',
-                        'Sexy': 'Sexiest',
                         'Amazing': 'Most amazing',
-                        'Incredible': 'Most incredible',
-                        'Stunning': 'Most stunning',
+                        'Awesome': 'Most awesome',
+                        'Beautiful': 'Most beautiful',
+                        'Beloved': 'Most beloved',
+                        'Brilliant': 'Most brilliant',
+                        'Charming': 'Most charming',
+                        'Dazzling': 'Most dazzling',
+                        'Dear': 'Dearest',
+                        'Delicate': 'Most delicate',
+                        'Delightful': 'Most delightful',
+                        'Divine': 'Most divine',
+                        'Enchanting': 'Most enchanting',
+                        'Exquisite': 'Most exquisite',
                         'Fantastic': 'Most fantastic',
+                        'Fascinating': 'Most fascinating',
+                        'Gorgeous': 'Most gorgeous',
                         'Hot': 'Hottest',
+                        'Incredible': 'Most incredible',
+                        'Lovely': 'Loveliest',
+                        'Magnificent': 'Most magnificent',
+                        'Precious': 'Most precious',
+                        'Radiant': 'Most radiant',
+                        'Ravishing': 'Most ravishing',
+                        'Sensational': 'Most sensational',
+                        'Sexy': 'Sexiest',
+                        'Spectacular': 'Most spectacular',
+                        'Stunning': 'Most stunning',
+                        'Sweet': 'Sweetest',
+                        'Wonderful': 'Most wonderful',
                     };
+                    //Note: repeats are on purpose to make them slightly more common.
                     const endearment = [
                         'Tonia',
                         'princess',
                         'baby girl',
                         'best friend',
+                        'favorite person',
+                        'Tonia',
+                        'princess',
+                        'baby girl',
+                        'favorite human being',
+                        'queen of babes',
+                        'goddess of beauty',
+                        'mother of canines',
+                        'Tonia',
+                        'princess',
+                        'baby girl',
+                        'keeper of my heart',
+                        'princess of my heart',
                     ];
                     //Remove used terms of endearment.
                     if (usedTerm1.length > 0 && endearment.indexOf(usedTerm1) > -1) {
@@ -327,11 +395,17 @@
                         descChain = desc.join(', ');
                     }
 
-                    if (Math.floor(rnd(m++) * 100) % 7 > 0) {
-                        //pick a first word
-                        descChain = `${firstWord[Math.floor(rnd(m++) * firstWord.length)]} ${descChain.toLowerCase()}`;
-                    }
                     usedTerm0 = endearment[Math.floor(rnd(m++) * endearment.length)];
+                    const legalFirstWord = (usedTerm0.toLowerCase().indexOf('favorite') > -1 || usedTerm0.toLowerCase().indexOf('best') > -1)
+                        ? firstWord.filter(x => x.toLowerCase().indexOf('my') > -1)
+                        : (usedTerm0.toLowerCase().indexOf('my') > -1)
+                            ? firstWord.filter(x => x.toLowerCase().indexOf('my') < 0)
+                            : firstWord;
+
+                    if (legalFirstWord.length !== firstWord.length || Math.floor(rnd(m++) * 100) % 7 > 0) {
+                        //pick a first word
+                        descChain = `${legalFirstWord[Math.floor(rnd(m++) * legalFirstWord.length)]} ${descChain.toLowerCase()}`;
+                    }
                     return `${descChain} ${usedTerm0},`;
                 };
 
@@ -396,6 +470,8 @@
 
             function Builder() {
                 const r = new BadRando();
+                const installmentsToolContainerId = 'installmentsToolContainer';
+                const numInstallmentsSelectorId = 'numInstallmentsSelector';
 
                 this.buildMorningMessage = () => {
                     const message = `${r.getGoodMorning()} 😍 ${r.getILoveYou()} 🥰\n\n[my dreams and how I'm feeling]\n\n${r.getQuestions()} 😘`;
@@ -415,16 +491,36 @@
                     return makeDetail(`Goodnight Message`, textArea, r.isEvening);
                 };
                 
-                //TODO: tools for installments?
+                this.buildInstallmentsTool = () => {
+                    const tool = createElement('div', {'style': 'padding: 16px;', 'id': installmentsToolContainerId}, null);
+                    tool.appendChild(createElement('label', {'for': numInstallmentsSelectorId}, `How many installments?`));
+                    tool.appendChild(createElement('input', {'type': 'number', 'min': '1', 'max': '100', 'value': '3', 'name': numInstallmentsSelectorId, 'id': numInstallmentsSelectorId}));
+                    const goButton = createElement('input', {'type': 'button', 'value': 'Begin!'});
+                    goButton.addEventListener('click', populateInstallmentsTool, false);
+                    tool.appendChild(goButton);
+                    return makeDetail(`Installments Helper`, tool, false);
+                };
+
+                const populateInstallmentsTool = () => {
+                    const numSelector = document.getElementById(numInstallmentsSelectorId);
+                    const num = parseInt(numSelector.value);
+                    const toolContainer = document.getElementById(installmentsToolContainerId);
+                    if (toolContainer && num && !isNaN(num) && num > 0) {
+                        toolContainer.innerHTML = '';
+                        for (let i = 0; i < num; i++) {
+                            toolContainer.appendChild(createElement('textarea', {'style': 'width: 512px; height: 256px; margin:16px auto;'}, `${(i+1)}/${num}: `));
+                        }
+                    }
+                };
             }
 
             const builder = new Builder();
-            //TODO: prettier formatting (center div container, etc.)
             const container = createElement('div', {'style': 'width:600px;height:100%;margin:0px auto;display:flex;flex-wrap:wrap;flex-direction:column;'}, null);
             container.appendChild(createElement('h1', {}, `Messaging Tools`));
             container.appendChild(builder.buildMorningMessage());
             container.appendChild(builder.buildAudioClipMessage());
             container.appendChild(builder.buildGoodnightMessage());
+            container.appendChild(builder.buildInstallmentsTool());
             document.body.appendChild(container);
         </script>
     </body>
