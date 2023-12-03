@@ -517,10 +517,13 @@
             const builder = new Builder();
             const container = createElement('div', {'style': 'width:600px;height:100%;margin:0px auto;display:flex;flex-wrap:wrap;flex-direction:column;'}, null);
             container.appendChild(createElement('h1', {}, `Messaging Tools`));
+            container.appendChild(createElement('h2', {}, `For Use with My Princess`));
             container.appendChild(builder.buildMorningMessage());
             container.appendChild(builder.buildAudioClipMessage());
             container.appendChild(builder.buildGoodnightMessage());
             container.appendChild(builder.buildInstallmentsTool());
+            container.appendChild(createElement('h2', {}, `For Use with Everyone Else`));
+            container.appendChild(createElement('p', {}, `Coming soon...`));
             document.body.appendChild(container);
         </script>
     </body>
