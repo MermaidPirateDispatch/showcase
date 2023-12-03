@@ -9,18 +9,7 @@
         <script src="../scripts/html_tools.js"></script>
         <script src="../scripts/string_tools.js"></script>
         <script>
-            //TODO:
-           /*
-            * Automatic saving for all text areas based on the day.
-            * When loading, check for save data (including the tricky installments tool).
-            * Save data should be cleared on a new day though (last day used is stored in a single key maybe).
-            * Step 1: refactor so that it has a state and always loads in according to that state.
-            * Step 2: save the stringified state to the localStorage using the date as the key, also store the date under a different key.
-            * Step 3: if the date is the same as the stored date in the date key, load in the data. Else, wipe the data and create a new state.
-            * Step 4: save the state once everything is generated.
-            * *
-            */
-            function BadRando() {
+            function BadRando(state) {
                 const date = new Date();
                 const salty = date.getMilliseconds() + 1;
                 const hour = date.getHours();
@@ -468,55 +457,189 @@
                 };
             }
 
-            function Builder() {
-                const r = new BadRando();
+            function Builder(state) {
+                const r = new BadRando(state);
                 const installmentsToolContainerId = 'installmentsToolContainer';
                 const numInstallmentsSelectorId = 'numInstallmentsSelector';
+                const maxInstallments = state.getMaxInstallments();
 
                 this.buildMorningMessage = () => {
-                    const message = `${r.getGoodMorning()} 😍 ${r.getILoveYou()} 🥰\n\n[my dreams and how I'm feeling]\n\n${r.getQuestions()} 😘`;
+                    let message = state.getMorningMessage();
+                    if (message === null) {
+                        message = `${r.getGoodMorning()} 😍 ${r.getILoveYou()} 🥰\n\n[my dreams and how I'm feeling]\n\n${r.getQuestions()} 😘`;
+                    }
                     const textArea = createElement('textarea', {'style': 'width: 512px; height: 128px; margin:16px auto;'}, message);
+                    textArea.addEventListener('keyup', () => state.saveState());
+                    state.connectTextArea(state.stateManagerNames.morning, textArea);
                     return makeDetail(`Good Morning Message`, textArea, r.isMorning);
                 };
 
                 this.buildAudioClipMessage = () => {
-                    const message = r.getAudioClipQuestion();
+                    let message = state.getAudioClipMessage();
+                    if (message === null) {
+                        message = r.getAudioClipQuestion();
+                    }
                     const textArea = createElement('textarea', {'style': 'width: 512px; height: 64px; margin:16px auto;'}, message);
+                    textArea.addEventListener('keyup', () => state.saveState());
+                    state.connectTextArea(state.stateManagerNames.audioClip, textArea);
                     return makeDetail(`Audio Clip Message`, textArea, r.isAfternoon);
                 };
 
                 this.buildGoodnightMessage = () => {
-                    const message = `${r.getBedtimeTitles()} [mini love letter]\n\n${r.getGoldenShipOpening()} [golden ship notes]\n\n${r.getGoodnightOpening()} [goodnight sweetness] 😘`;
+                    let message = state.getGoodnightMessage();
+                    if (message === null) {
+                        message = `${r.getBedtimeTitles()} [mini love letter]\n\n${r.getGoldenShipOpening()} [golden ship notes]\n\n${r.getGoodnightOpening()} [goodnight sweetness] 😘`;
+                    }
                     const textArea = createElement('textarea', {'style': 'width: 512px; height: 256px; margin:16px auto;'}, message);
+                    textArea.addEventListener('keyup', () => state.saveState());
+                    state.connectTextArea(state.stateManagerNames.goodnight, textArea);
                     return makeDetail(`Goodnight Message`, textArea, r.isEvening);
                 };
                 
                 this.buildInstallmentsTool = () => {
+                    let numInstallments = state.getNumInstallments();
+                    if (numInstallments === null) {
+                        numInstallments = 3;
+                        state.setNumInstallments(numInstallments);
+                    }
                     const tool = createElement('div', {'style': 'padding: 16px;', 'id': installmentsToolContainerId}, null);
                     tool.appendChild(createElement('label', {'for': numInstallmentsSelectorId}, `How many installments?`));
-                    tool.appendChild(createElement('input', {'type': 'number', 'min': '1', 'max': '100', 'value': '3', 'name': numInstallmentsSelectorId, 'id': numInstallmentsSelectorId}));
+                    const numInstallmentsSelector = createElement('input', {'type': 'number', 'min': '1', 'max': maxInstallments, 'value': numInstallments, 'name': numInstallmentsSelectorId, 'id': numInstallmentsSelectorId});
+                    numInstallmentsSelector.addEventListener('keyup', () => state.saveState());
+                    numInstallmentsSelector.addEventListener('mouseup', () => state.saveState());
+                    state.connectNumberSelector(state.stateManagerNames.numInstallments, numInstallmentsSelector, sanitizeNumInstallments);
+                    tool.appendChild(numInstallmentsSelector);
                     const goButton = createElement('input', {'type': 'button', 'value': 'Begin!'});
                     goButton.addEventListener('click', populateInstallmentsTool, false);
                     tool.appendChild(goButton);
-                    return makeDetail(`Installments Helper`, tool, false);
+                    if (state.installmentsStarted()) {
+                        addInstallmentsBoxes(tool);
+                    }
+                    return makeDetail(`Installments Helper`, tool, state.installmentsStarted());
                 };
 
+                const sanitizeNumInstallments = (num) => Math.max(1, Math.min(num, maxInstallments));
+
                 const populateInstallmentsTool = () => {
-                    const numSelector = document.getElementById(numInstallmentsSelectorId);
-                    const num = parseInt(numSelector.value);
                     const toolContainer = document.getElementById(installmentsToolContainerId);
+                    return addInstallmentsBoxes(toolContainer);
+                };
+
+                const addInstallmentsBoxes = (toolContainer) => {
+                    const num = state.getNumInstallments();
                     if (toolContainer && num && !isNaN(num) && num > 0) {
                         toolContainer.innerHTML = '';
                         for (let i = 0; i < num; i++) {
                             //TODO: add a checkbox for each one to indicate when an installment has been delivered.
                             //When checked, gray out the text box? Collapse it to make it smaller?
-                            toolContainer.appendChild(createElement('textarea', {'style': 'width: 512px; height: 256px; margin:16px auto;'}, `${(i+1)}/${num}: `));
+                            let text = state.getInstallmentMessage(i+1);
+                            if (text === null) {
+                                text = `${(i+1)}/${num}: `;
+                            }
+                            const textArea = createElement('textarea', {'style': 'width: 512px; height: 256px; margin:16px auto;'}, text);
+                            textArea.addEventListener('keyup', () => state.saveState());
+                            state.connectTextArea(state.stateManagerNames[`installment${(i+1)}`], textArea);
+                            toolContainer.appendChild(textArea);
                         }
                     }
                 };
             }
 
-            const builder = new Builder();
+            //TODO: allow clearing a value and setting it to null to regenerate a value (use a button on each textArea).
+            function StateManager() {
+                const stateDateKey = 'MessageToolStateDate';
+                const stateDataKey = 'MessageToolStateData';
+                const currentDate = (new Date()).toDateString();
+                const maxInstallments = 12;
+
+                this.getMaxInstallments = () => maxInstallments;
+
+                this.stateManagerNames = {
+                    morning: 'morningMessage',
+                    audioClip: 'audioClipMessage',
+                    goodnight: 'goodnightMessage',
+                    numInstallments: 'numInstallments',
+                    installment1: 'installment1Message',
+                    installment2: 'installment2Message',
+                    installment3: 'installment3Message',
+                    installment4: 'installment4Message',
+                    installment5: 'installment5Message',
+                    installment6: 'installment6Message',
+                    installment7: 'installment7Message',
+                    installment8: 'installment8Message',
+                    installment9: 'installment9Message',
+                    installment10: 'installment10Message',
+                    installment11: 'installment11Message',
+                    installment12: 'installment12Message',
+                };
+                let stateObj = {};
+
+                for (let n in this.stateManagerNames) {
+                    stateObj[this.stateManagerNames[n]] = null;
+                }
+
+                const stateManagers = {};
+
+                this.connectTextArea = (key, textArea) => {
+                    stateManagers[key] = new TextAreaStateManager(textArea);
+                };
+
+                this.connectNumberSelector = (key, numSelector, sanitizer) => {
+                    stateManagers[key] = new NumberSelectorStateManager(numSelector, sanitizer);
+                };
+
+                const loadState = () => {
+                    stateObj = JSON.parse(localStorage.getItem(stateDataKey));
+                };
+
+                this.saveState = () => {
+                    for (let n in stateManagers) {
+                        if (stateManagers.hasOwnProperty(n)) {
+                            stateObj[n] = stateManagers[n].getValue();
+                        }
+                    }
+                    localStorage.setItem(stateDataKey, JSON.stringify(stateObj));
+                };
+
+                this.getMorningMessage = () => stateObj[this.stateManagerNames.morning];
+                this.getAudioClipMessage = () => stateObj[this.stateManagerNames.audioClip];
+                this.getGoodnightMessage = () => stateObj[this.stateManagerNames.goodnight];
+
+                this.getNumInstallments = () => stateObj[this.stateManagerNames.numInstallments];
+                this.setNumInstallments = (num) => stateObj[this.stateManagerNames.numInstallments] = num;
+
+                this.getInstallmentMessage = (num) => stateObj[this.stateManagerNames[`installment${num}`]];
+                this.installmentsStarted = () => {
+                    for (let i = 0; i < maxInstallments; i++) {
+                        if (this.getInstallmentMessage(i+1) !== null) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+
+                if (localStorage.getItem(stateDateKey) === currentDate) {
+                    loadState();
+                }
+                else {
+                    localStorage.setItem(stateDateKey, currentDate);
+                    this.saveState();
+                }
+            }
+
+            function TextAreaStateManager(ta) {
+                const textArea = ta;
+                this.getValue = () => textArea.value;
+            }
+
+            function NumberSelectorStateManager(ns, sani) {
+                const numberSelector = ns;
+                const sanitizer = sani;
+                this.getValue = () => sanitizer(parseInt(numberSelector.value));
+            }
+
+            const state = new StateManager();
+            const builder = new Builder(state);
             const container = createElement('div', {'style': 'width:600px;height:100%;margin:0px auto;display:flex;flex-wrap:wrap;flex-direction:column;'}, null);
             container.appendChild(createElement('h1', {}, `Messaging Tools`));
             container.appendChild(createElement('h2', {}, `For Use with My Princess`));
@@ -527,6 +650,7 @@
             container.appendChild(createElement('h2', {}, `For Use with Everyone Else`));
             container.appendChild(createElement('p', {}, `Coming soon...`));
             document.body.appendChild(container);
+            state.saveState();
         </script>
     </body>
 </html>
