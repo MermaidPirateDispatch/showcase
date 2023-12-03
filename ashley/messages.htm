@@ -508,6 +508,8 @@
                     if (toolContainer && num && !isNaN(num) && num > 0) {
                         toolContainer.innerHTML = '';
                         for (let i = 0; i < num; i++) {
+                            //TODO: add a checkbox for each one to indicate when an installment has been delivered.
+                            //When checked, gray out the text box? Collapse it to make it smaller?
                             toolContainer.appendChild(createElement('textarea', {'style': 'width: 512px; height: 256px; margin:16px auto;'}, `${(i+1)}/${num}: `));
                         }
                     }
