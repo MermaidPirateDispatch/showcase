@@ -420,16 +420,19 @@
                         `${goldenTerm} is ready for you, ${endearmentTerm.toLowerCase()}.`,
                         `${goldenTerm} bobs quietly at the docks, waiting for its princess.`,
                         `${goldenTerm} is ready.`,
+                        `Adventure awaits on the Golden Star for you tonight, ${endearmentTerm.toLowerCase()}.`,
                         `The Golden Star is ready for boarding, ${endearmentTerm.toLowerCase()}.`,
                         `${endearmentTerm}, ${goldenTerm.toLowerCase()} is ready for boarding.`,
                         `${goldenTerm} is ready for adventure.`,
+                        `Adventure awaits for you tonight, ${endearmentTerm.toLowerCase()}, on ${goldenTerm.toLowerCase()}.`,
                         `The Golden Star is ready for boarding.`,
                         `${goldenTerm} awaits its princess.`,
                         `${goldenTerm} is ready for boarding.`,
+                        `Adventure awaits for you tonight on ${goldenTerm.toLowerCase()} ${endearmentTerm.toLowerCase()}.`,
                         `The Golden Star is ready for its princess to board.`,
                         `${goldenTerm} bobs quietly at the docks, waiting for you, ${endearmentTerm.toLowerCase()}.`,
                         `${goldenTerm} is ready to board.`,
-                        `I have prepared ${goldenTerm.toLowerCase()} for you, ${endearmentTerm.toLowerCase()}.`,
+                        `I have prepared ${goldenTerm.toLowerCase()} for you ${endearmentTerm.toLowerCase()}.`,
                         `${goldenTerm} is ready for its princess.`,
                     ];
                     return phrases[Math.floor(rnd(m++) * phrases.length)];
@@ -459,6 +462,7 @@
 
             function Builder(state) {
                 const r = new BadRando(state);
+                const regenerateButtonText = 'Regenerate Message';
                 const installmentsToolContainerId = 'installmentsToolContainer';
                 const numInstallmentsSelectorId = 'numInstallmentsSelector';
                 const maxInstallments = state.getMaxInstallments();
@@ -468,10 +472,22 @@
                     if (message === null) {
                         message = `${r.getGoodMorning()} 😍 ${r.getILoveYou()} 🥰\n\n[my dreams and how I'm feeling]\n\n${r.getQuestions()} 😘`;
                     }
-                    const textArea = createElement('textarea', {'style': 'width: 512px; height: 128px; margin:16px auto;'}, message);
+                    const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
+                    
+                    const textArea = createElement('textarea', {'style': 'height:256px;'}, message);
                     textArea.addEventListener('keyup', () => state.saveState());
                     state.connectTextArea(state.stateManagerNames.morning, textArea);
-                    return makeDetail(`Good Morning Message`, textArea, r.isMorning);
+                    containerDiv.appendChild(textArea);
+
+                    const resetButton = createElement('input', {'type': 'button', 'value': regenerateButtonText}, null);
+                    resetButton.addEventListener('click', () => state.reset(state.stateManagerNames.morning), false);
+                    containerDiv.appendChild(resetButton);
+
+                    const detail = makeDetail(`Good Morning Message`, containerDiv, state.getMorningDetailOpen() || r.isMorning);
+                    detail.childNodes[0].addEventListener('click', () => state.saveState(10), false);
+                    state.connectDetail(state.stateManagerNames.morningDetail, detail);
+
+                    return detail;
                 };
 
                 this.buildAudioClipMessage = () => {
@@ -479,10 +495,22 @@
                     if (message === null) {
                         message = r.getAudioClipQuestion();
                     }
-                    const textArea = createElement('textarea', {'style': 'width: 512px; height: 64px; margin:16px auto;'}, message);
+                    const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
+                    
+                    const textArea = createElement('textarea', {'style': 'height:256px;'}, message);
                     textArea.addEventListener('keyup', () => state.saveState());
                     state.connectTextArea(state.stateManagerNames.audioClip, textArea);
-                    return makeDetail(`Audio Clip Message`, textArea, r.isAfternoon);
+                    containerDiv.appendChild(textArea);
+
+                    const resetButton = createElement('input', {'type': 'button', 'value': regenerateButtonText}, null);
+                    resetButton.addEventListener('click', () => state.reset(state.stateManagerNames.audioClip), false);
+                    containerDiv.appendChild(resetButton);
+
+                    const detail = makeDetail(`Audio Clip Message`, containerDiv, state.getAudioClipDetailOpen() || r.isAfternoon);
+                    detail.childNodes[0].addEventListener('click', () => state.saveState(10), false);
+                    state.connectDetail(state.stateManagerNames.audioClipDetail, detail);
+
+                    return detail;
                 };
 
                 this.buildGoodnightMessage = () => {
@@ -490,10 +518,22 @@
                     if (message === null) {
                         message = `${r.getBedtimeTitles()} [mini love letter]\n\n${r.getGoldenShipOpening()} [golden ship notes]\n\n${r.getGoodnightOpening()} [goodnight sweetness] 😘`;
                     }
-                    const textArea = createElement('textarea', {'style': 'width: 512px; height: 256px; margin:16px auto;'}, message);
+                    const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
+                    
+                    const textArea = createElement('textarea', {'style': 'height:256px;'}, message);
                     textArea.addEventListener('keyup', () => state.saveState());
                     state.connectTextArea(state.stateManagerNames.goodnight, textArea);
-                    return makeDetail(`Goodnight Message`, textArea, r.isEvening);
+                    containerDiv.appendChild(textArea);
+
+                    const resetButton = createElement('input', {'type': 'button', 'value': regenerateButtonText}, null);
+                    resetButton.addEventListener('click', () => state.reset(state.stateManagerNames.goodnight), false);
+                    containerDiv.appendChild(resetButton);
+
+                    const detail = makeDetail(`Goodnight Message`, containerDiv, state.getGoodnightDetailOpen() || r.isEvening);
+                    detail.childNodes[0].addEventListener('click', () => state.saveState(10), false);
+                    state.connectDetail(state.stateManagerNames.goodnightDetail, detail);
+
+                    return detail;
                 };
                 
                 this.buildInstallmentsTool = () => {
@@ -515,7 +555,12 @@
                     if (state.installmentsStarted()) {
                         addInstallmentsBoxes(tool);
                     }
-                    return makeDetail(`Installments Helper`, tool, state.installmentsStarted());
+
+                    const detail = makeDetail(`Installments Helper`, tool, state.getInstallmentsDetailOpen() || state.installmentsStarted());
+                    detail.childNodes[0].addEventListener('click', () => state.saveState(10), false);
+                    state.connectDetail(state.stateManagerNames.installmentsDetail, detail);
+
+                    return detail;
                 };
 
                 const sanitizeNumInstallments = (num) => Math.max(1, Math.min(num, maxInstallments));
@@ -529,23 +574,48 @@
                     const num = state.getNumInstallments();
                     if (toolContainer && num && !isNaN(num) && num > 0) {
                         toolContainer.innerHTML = '';
+                        const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
+
                         for (let i = 0; i < num; i++) {
-                            //TODO: add a checkbox for each one to indicate when an installment has been delivered.
-                            //When checked, gray out the text box? Collapse it to make it smaller?
                             let text = state.getInstallmentMessage(i+1);
+                            const defaultValue = `${(i+1)}/${num}: `;
                             if (text === null) {
-                                text = `${(i+1)}/${num}: `;
+                                text = defaultValue;
                             }
-                            const textArea = createElement('textarea', {'style': 'width: 512px; height: 256px; margin:16px auto;'}, text);
+
+                            const textArea = createElement('textarea', {'style': 'height:256px;'}, text);
                             textArea.addEventListener('keyup', () => state.saveState());
-                            state.connectTextArea(state.stateManagerNames[`installment${(i+1)}`], textArea);
-                            toolContainer.appendChild(textArea);
+                            state.connectTextArea(state.stateManagerNames[`installment${(i+1)}`], textArea, defaultValue);
+                            containerDiv.appendChild(textArea);
+                            containerDiv.appendChild(createCheckBox(i+1, num, state.stateManagerNames[`installment${(i+1)}Done`]));
                         }
+
+                        const resetButton = createElement('input', {'type': 'button', 'value': 'Reset Installments', 'style': 'background-color:#f4213a; color:#ffecec; font-weight:bold;'}, null);
+                        resetButton.addEventListener('click', () => state.reset(state.stateManagerNames.installments), false);
+                        containerDiv.appendChild(resetButton);
+
+                        toolContainer.appendChild(containerDiv);
                     }
+                };
+
+                const createCheckBox = (num, totalNum, connectTo) => {
+                    const frac = `${num}/${totalNum}`;
+                    const id = `installment${frac}`;
+                    const container = createElement('div', {'style': 'display: flex; flex-direction: row; align-items: baseline; gap: 5px;'}, null);
+                    const checkbox = createElement('input', {'type': 'checkbox', 'id': id, 'name': id}, null);
+                    checkbox.checked = state.getInstallmentDone(num);
+                    state.connectCheckBox(connectTo, checkbox);
+                    checkbox.addEventListener('click', () => state.saveState(10));
+                    checkbox.addEventListener('keyup', () => state.saveState(10));
+                    const label = createElement('label', {'for': id}, `${frac} Delivered`);
+                    label.addEventListener('click', () => state.saveState(10));
+
+                    container.appendChild(checkbox);
+                    container.appendChild(label);
+                    return container;
                 };
             }
 
-            //TODO: allow clearing a value and setting it to null to regenerate a value (use a button on each textArea).
             function StateManager() {
                 const stateDateKey = 'MessageToolStateDate';
                 const stateDataKey = 'MessageToolStateData';
@@ -554,11 +624,17 @@
 
                 this.getMaxInstallments = () => maxInstallments;
 
+                //NOTE: there is probably a better way to handle the installments!
                 this.stateManagerNames = {
                     morning: 'morningMessage',
+                    morningDetail: 'morningDetail',
                     audioClip: 'audioClipMessage',
+                    audioClipDetail: 'audioClipDetail',
                     goodnight: 'goodnightMessage',
+                    goodnightDetail: 'goodnightDetail',
+                    installments: 'allInstallments',
                     numInstallments: 'numInstallments',
+                    installmentsDetail: 'installmentsDetail',
                     installment1: 'installment1Message',
                     installment2: 'installment2Message',
                     installment3: 'installment3Message',
@@ -571,6 +647,18 @@
                     installment10: 'installment10Message',
                     installment11: 'installment11Message',
                     installment12: 'installment12Message',
+                    installment1Done: 'installment1Done',
+                    installment2Done: 'installment2Done',
+                    installment3Done: 'installment3Done',
+                    installment4Done: 'installment4Done',
+                    installment5Done: 'installment5Done',
+                    installment6Done: 'installment6Done',
+                    installment7Done: 'installment7Done',
+                    installment8Done: 'installment8Done',
+                    installment9Done: 'installment9Done',
+                    installment10Done: 'installment10Done',
+                    installment11Done: 'installment11Done',
+                    installment12Done: 'installment12Done',
                 };
                 let stateObj = {};
 
@@ -580,38 +668,90 @@
 
                 const stateManagers = {};
 
-                this.connectTextArea = (key, textArea) => {
-                    stateManagers[key] = new TextAreaStateManager(textArea);
+                this.connectTextArea = (key, textArea, defaultValue) => {
+                    stateManagers[key] = new TextAreaStateManager(textArea, defaultValue);
                 };
 
                 this.connectNumberSelector = (key, numSelector, sanitizer) => {
                     stateManagers[key] = new NumberSelectorStateManager(numSelector, sanitizer);
                 };
 
+                this.connectDetail = (key, detail) => {
+                    stateManagers[key] = new DetailStateManager(detail);
+                }
+
+                this.connectCheckBox = (key, checkbox) => {
+                    stateManagers[key] = new CheckBoxStateManager(checkbox);
+                };
+
                 const loadState = () => {
                     stateObj = JSON.parse(localStorage.getItem(stateDataKey));
                 };
 
-                this.saveState = () => {
+                this.saveState = (delay) => {
+                    if (delay === null || delay === undefined) {
+                        performSave();
+                    }
+                    else {
+                        setTimeout(performSave, delay);
+                    }
+                };
+
+                const performSave = () => {
                     for (let n in stateManagers) {
                         if (stateManagers.hasOwnProperty(n)) {
                             stateObj[n] = stateManagers[n].getValue();
+                            if (n.indexOf('installment') === 0 && n.indexOf('Message') > -1) {
+                                stateManagers[n].setDisabled(stateManagers[n.replace('Message', 'Done')].getValue());
+                            }
                         }
                     }
                     localStorage.setItem(stateDataKey, JSON.stringify(stateObj));
                 };
 
-                this.getMorningMessage = () => stateObj[this.stateManagerNames.morning];
-                this.getAudioClipMessage = () => stateObj[this.stateManagerNames.audioClip];
-                this.getGoodnightMessage = () => stateObj[this.stateManagerNames.goodnight];
+                this.reset = (key) => {
+                    switch (key) {
+                        case this.stateManagerNames.installments:
+                            if (this.installmentsStarted() && !confirm(`This will delete all installment messages written so far and reset the installments panel. Are you sure?`)){
+                                return;
+                            }
+                            resetState(this.stateManagerNames.numInstallments);
+                            resetState(this.stateManagerNames.installmentsDetail);
+                            for (let i = 0; i < maxInstallments; i++) {
+                                resetState(this.stateManagerNames[`installment${(i+1)}`]);
+                                resetState(this.stateManagerNames[`installment${(i+1)}Done`]);
+                            }
+                            break;
+                        default:
+                            resetState(key);
+                    }
+                    this.saveState();
+                    location.reload();
+                };
 
+                const resetState = (key) => {
+                    stateObj[key] = null;
+                    delete stateManagers[key];
+                };
+
+                this.getMorningMessage = () => stateObj[this.stateManagerNames.morning];
+                this.getMorningDetailOpen = () => stateObj[this.stateManagerNames.morningDetail];
+
+                this.getAudioClipMessage = () => stateObj[this.stateManagerNames.audioClip];
+                this.getAudioClipDetailOpen = () => stateObj[this.stateManagerNames.audioClipDetail];
+
+                this.getGoodnightMessage = () => stateObj[this.stateManagerNames.goodnight];
+                this.getGoodnightDetailOpen = () => stateObj[this.stateManagerNames.goodnightDetail];
+
+                this.getInstallmentsDetailOpen = () => stateObj[this.stateManagerNames.installmentsDetail];
                 this.getNumInstallments = () => stateObj[this.stateManagerNames.numInstallments];
                 this.setNumInstallments = (num) => stateObj[this.stateManagerNames.numInstallments] = num;
 
                 this.getInstallmentMessage = (num) => stateObj[this.stateManagerNames[`installment${num}`]];
+                this.getInstallmentDone = (num) => stateObj[this.stateManagerNames[`installment${num}Done`]];
                 this.installmentsStarted = () => {
                     for (let i = 0; i < maxInstallments; i++) {
-                        if (this.getInstallmentMessage(i+1) !== null) {
+                        if (this.getInstallmentDone(i+1) || this.getInstallmentMessage(i+1) !== null) {
                             return true;
                         }
                     }
@@ -627,15 +767,27 @@
                 }
             }
 
-            function TextAreaStateManager(ta) {
+            function TextAreaStateManager(ta, defVal) {
                 const textArea = ta;
-                this.getValue = () => textArea.value;
+                const defaultValue = defVal;
+                this.getValue = () => defaultValue && textArea.value === defaultValue ? null : textArea.value;
+                this.setDisabled = (disabled) => textArea.disabled = disabled;
             }
 
             function NumberSelectorStateManager(ns, sani) {
                 const numberSelector = ns;
                 const sanitizer = sani;
                 this.getValue = () => sanitizer(parseInt(numberSelector.value));
+            }
+
+            function DetailStateManager(dt) {
+                const detail = dt;
+                this.getValue = () => detail.open || false;
+            }
+
+            function CheckBoxStateManager(cb) {
+                const checkbox = cb;
+                this.getValue = () => checkbox.checked;
             }
 
             const state = new StateManager();
