@@ -11,6 +11,11 @@ textarea:read-only
     background-color: rgb(2, 2, 4);
 }
 
+summary
+{
+    margin-left: 8px;
+}
+
 fieldset
 {
     border-radius: 5px;

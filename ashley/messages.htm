@@ -536,6 +536,26 @@
 
                     return detail;
                 };
+
+                //TODO: customs ideas generator/randomizer!
+                //Make sure to include such options as:
+                //Tonia decides!
+                //Random Tonia idea!
+                //A surprise from Tonia!
+                //... and other variations on the idea. :)
+                this.buildCustomOrderingTool = () => {
+                    const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
+                    const comingSoon = createElement('h2', {}, 'Coming soon!');
+                    containerDiv.appendChild(comingSoon);
+
+                    //TODO: reset button? Re-roll button? Try again button? lol
+
+                    const detail = makeDetail(`Custom Ordering Tool`, containerDiv, state.getCustomDetailOpen() || r.isEvening);
+                    detail.childNodes[0].addEventListener('click', () => state.saveState(10), false);
+                    state.connectDetail(state.stateManagerNames.customDetail, detail);
+
+                    return detail;
+                }
                 
                 this.buildInstallmentsTool = () => {
                     let numInstallments = state.getNumInstallments();
@@ -633,6 +653,7 @@
                     audioClipDetail: 'audioClipDetail',
                     goodnight: 'goodnightMessage',
                     goodnightDetail: 'goodnightDetail',
+                    customDetail: 'customDetail',
                     installments: 'allInstallments',
                     numInstallments: 'numInstallments',
                     installmentsDetail: 'installmentsDetail',
@@ -743,6 +764,8 @@
 
                 this.getGoodnightMessage = () => stateObj[this.stateManagerNames.goodnight];
                 this.getGoodnightDetailOpen = () => stateObj[this.stateManagerNames.goodnightDetail];
+                
+                this.getCustomDetailOpen = () => stateObj[this.stateManagerNames.customDetail];
 
                 this.getInstallmentsDetailOpen = () => stateObj[this.stateManagerNames.installmentsDetail];
                 this.getNumInstallments = () => stateObj[this.stateManagerNames.numInstallments];
@@ -799,6 +822,7 @@
             container.appendChild(builder.buildMorningMessage());
             container.appendChild(builder.buildAudioClipMessage());
             container.appendChild(builder.buildGoodnightMessage());
+            container.appendChild(builder.buildCustomOrderingTool());
             container.appendChild(builder.buildInstallmentsTool());
             container.appendChild(createElement('h2', {}, `For Use with Everyone Else`));
             container.appendChild(createElement('p', {}, `Coming soon...`));
