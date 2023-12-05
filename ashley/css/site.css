@@ -1,3 +1,16 @@
+textarea
+{
+    color: rgb(246, 247, 248);
+    background-color: rgb(22, 22, 24);
+    font-family: 'Roboto';
+}
+
+textarea:read-only
+{
+    color: rgb(226, 227, 228);
+    background-color: rgb(2, 2, 4);
+}
+
 fieldset
 {
     border-radius: 5px;
