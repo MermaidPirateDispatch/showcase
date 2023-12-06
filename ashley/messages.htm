@@ -550,7 +550,7 @@
 
                     //TODO: reset button? Re-roll button? Try again button? lol
 
-                    const detail = makeDetail(`Custom Ordering Tool`, containerDiv, state.getCustomDetailOpen() || r.isEvening);
+                    const detail = makeDetail(`Custom Ordering Tool`, containerDiv, state.getCustomDetailOpen());
                     detail.childNodes[0].addEventListener('click', () => state.saveState(10), false);
                     state.connectDetail(state.stateManagerNames.customDetail, detail);
 
