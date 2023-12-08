@@ -12,13 +12,9 @@
         <script>
             function BadRando(state) {
                 const date = new Date();
-                const salty = date.getMilliseconds() + 1;
                 const hour = date.getHours();
                 const dayNum = date.getDay() + 1;
                 const day = date.getDate();
-                const month = date.getMonth() + 1;
-                const yearNum = date.getFullYear();
-                const rndSeed = (dayNum * day * month * yearNum * salty) + hour + salty;
                 const isWeekend = dayNum === 1 || dayNum === 7;
 
                 this.isMorning = hour < 12;
@@ -33,13 +29,9 @@
                 let usedTerm1 = '';
                 let usedTerm2 = '';
 
-                function rnd(denom){
-                    const ri = (rndSeed / denom) * 1000007003;
-                    const result = ri - (Math.floor(ri));
-                    return result;
-                }
+                const rnd = () => Math.random();
 
-                function monthDiff(d1, d2){
+                function monthDiff(d1, d2) {
                     let months = (d2.getFullYear() - d1.getFullYear()) * 12;
                     months -= d1.getMonth();
                     months += d2.getMonth();
@@ -58,28 +50,25 @@
                 };
 
                 this.getILoveYou = () => {
-                    const rnd1 = rnd(49205839);
-                    if (Math.floor(rnd1 * 4) === 1){
-                        const rnd2 = rnd(49290583);
+                    if (Math.floor(rnd() * 4) === 1) {
                         const phrases = [
                             `I love you *so* much.`,
                             `I love you dearly.`,
                             `I love you immensely.`,
                             `I love you forever.`,
                         ];
-                        return phrases[Math.floor(rnd2 * phrases.length)];
+                        return phrases[Math.floor(rnd() * phrases.length)];
                     }
                     return `I love you.`;
                 };
 
                 this.getQuestions = () => {
-                    let m = 14935804;
                     let msg = ``;
                     //0: is it the 19th?
-                    if (day === 19){
+                    if (day === 19) {
                         const chattingSince = new Date(2023, 3, 19);
                         const diffMonths = monthDiff(chattingSince, date);
-                        if (diffMonths % 12 === 0){
+                        if (diffMonths % 12 === 0) {
                             //anniversary
                             const numYears = diffMonths / 12;
                             const yearOrYears = numYears === 1 ? 'year' : 'years';
@@ -108,8 +97,8 @@
                                 'wonderful',
                                 'spectacular',
                             ];
-                            const adj = adjectives[Math.floor(rnd(m++) * adjectives.length)];
-                            const statement = `Happy ${cardinals[numYears-1]} anniversary ${endearment[Math.floor(rnd(m++) * endearment.length)]}!`;
+                            const adj = adjectives[Math.floor(rnd() * adjectives.length)];
+                            const statement = `Happy ${cardinals[numYears-1]} anniversary ${endearment[Math.floor(rnd() * endearment.length)]}!`;
                             const additions = [
                                 `Can you believe it's been a whole ${numYears} ${yearOrYears} since we started chatting?`,
                                 `It's been ${numYears} ${adj} ${yearOrYears} of chatting and growing our beautiful friendship.`,
@@ -121,7 +110,7 @@
                                 `🌺🌺🌺💝💝💝🌺🌺🌺`,
                                 `🍾🥂❤️💋🫶💐🤗😘`,
                             ];
-                            msg += `${statement} ${additions[Math.floor(rnd(m++) * additions.length)]} ${yearEmojis[Math.floor(rnd(m++) * yearEmojis.length)]} `;
+                            msg += `${statement} ${additions[Math.floor(rnd() * additions.length)]} ${yearEmojis[Math.floor(rnd() * yearEmojis.length)]} `;
                         }
                         else{
                             //monthiversary
@@ -138,7 +127,7 @@
                                 `🌺🌹💐`,
                                 `💖🥰😚`,
                             ];
-                            msg += `${monthiversary[Math.floor(rnd(m++) * monthiversary.length)]} ${monthEmojis[Math.floor(rnd(m++) * monthEmojis.length)]} `;
+                            msg += `${monthiversary[Math.floor(rnd() * monthiversary.length)]} ${monthEmojis[Math.floor(rnd() * monthEmojis.length)]} `;
                         }
                     }
 
@@ -151,7 +140,7 @@
                         `How are you feeling today princess?`,
                         `How are you feeling baby girl?`,
                     ];
-                    msg += howFeeling[Math.floor(rnd(m++) * howFeeling.length)];
+                    msg += howFeeling[Math.floor(rnd() * howFeeling.length)];
                     //2: how was your morning variations
                     const morning = [
                         `How has your day been so far?`,
@@ -163,9 +152,9 @@
                         `How did the morning treat you?`,
                         `How did your morning go?`,
                     ];
-                    msg += ' ' + morning[Math.floor(rnd(m++) * morning.length)];
+                    msg += ' ' + morning[Math.floor(rnd() * morning.length)];
                     //3: up to 1 optional question about class, work, kaj, life, etc.
-                    if (Math.floor(rnd(m++) * 5) > 2){
+                    if (Math.floor(rnd() * 5) > 2) {
                         const optional = [];
                         optional.push(`How is Kaj doing today?`);
                         if (!isWeekend) {
@@ -195,13 +184,12 @@
                         optional.push(`How has work been lately?`);
                         optional.push(`How is work going?`);
                         optional.push(`Anything interesting happening with work?`);
-                        msg += ' ' + optional[Math.floor(rnd(m++) * optional.length)];
+                        msg += ' ' + optional[Math.floor(rnd() * optional.length)];
                     }
                     return msg;
                 };
 
                 this.getAudioClipQuestion = () => {
-                    let m = 20759314;
                     const options = [
                         'Silly',
                         'Sweet',
@@ -214,7 +202,7 @@
                     let msg = '';
                     let listOptions = '';
                     while (options.length > 0) {
-                        const opt = options.splice(Math.floor(rnd(m++) * options.length), 1)[0];
+                        const opt = options.splice(Math.floor(rnd() * options.length), 1)[0];
                         reorderedOptions.push(opt);
                         if (options.length > 0) {
                             listOptions += opt.toLowerCase() + ', ';
@@ -226,13 +214,13 @@
                     const individualOptionQuestions = reorderedOptions.map(o => `${o}?`).join(' ');
                     const aOrAn = listOptions.indexOf('o') === 0 ? 'an' : 'a';
 
-                    if (Math.floor(rnd(m++) * 10) % 3 === 0) {
+                    if (Math.floor(rnd() * 10) % 3 === 0) {
                         const single = [
                             `For your audio clip this evening would you like something ${listOptions}?`,
                             `Would you like ${aOrAn} ${listOptions} audio clip this evening?`,
                             `Are you in the mood for something ${listOptions} this evening?`,
                         ];
-                        msg = single[Math.floor(rnd(m++) * single.length)];
+                        msg = single[Math.floor(rnd() * single.length)];
                     }
                     else {
                         //two sentence options
@@ -250,11 +238,11 @@
                             `Something ${listOptions}?`,
                         ];
 
-                        msg = `${opening[Math.floor(rnd(m++) * opening.length)]} ${ending[Math.floor(rnd(m++) * ending.length)]}`;
+                        msg = `${opening[Math.floor(rnd() * opening.length)]} ${ending[Math.floor(rnd() * ending.length)]}`;
                     }
 
-                    if (Math.floor(rnd(m++) * 10) % 3 > 0) {
-                        if (Math.floor(rnd(m++) * 10) % 2 === 0) {
+                    if (Math.floor(rnd() * 10) % 3 > 0) {
+                        if (Math.floor(rnd() * 10) % 2 === 0) {
                             msg += ' 😘';
                         }
                         else {
@@ -266,7 +254,6 @@
                 };
 
                 this.getBedtimeTitles = () => {
-                    let m = 14598314;
                     const firstWord = [
                         'Oh',
                         'My',
@@ -366,47 +353,46 @@
                     const desc = [];
                     let n = 0;
                     do {
-                        let d = descriptors.splice(Math.floor(rnd(m++) * descriptors.length), 1)[0];
-                        if (Math.floor(rnd(m++) * 67) > 50 && mostUpgrade.hasOwnProperty(d)) {
+                        let d = descriptors.splice(Math.floor(rnd() * descriptors.length), 1)[0];
+                        if (Math.floor(rnd() * 67) > 50 && mostUpgrade.hasOwnProperty(d)) {
                             d = mostUpgrade[d];
                         }
                         if (n > 0) {
                             d = d.toLowerCase();
                         }
                         desc.push(d);
-                    } while ((Math.floor(rnd(m++) * 4) > n++));
+                    } while ((Math.floor(rnd() * 4) > n++));
 
                     //if only two desc, joining with a , is optional
                     let descChain = '';
-                    if (desc.length == 2 && Math.floor(rnd(m++) * 100) % 4 === 0) {
+                    if (desc.length == 2 && Math.floor(rnd() * 100) % 4 === 0) {
                         descChain = desc.join(' ');
                     }
                     else {
                         descChain = desc.join(', ');
                     }
 
-                    usedTerm0 = endearment[Math.floor(rnd(m++) * endearment.length)];
+                    usedTerm0 = endearment[Math.floor(rnd() * endearment.length)];
                     const legalFirstWord = (usedTerm0.toLowerCase().indexOf('favorite') > -1 || usedTerm0.toLowerCase().indexOf('best') > -1)
                         ? firstWord.filter(x => x.toLowerCase().indexOf('my') > -1)
                         : (usedTerm0.toLowerCase().indexOf('my') > -1)
                             ? firstWord.filter(x => x.toLowerCase().indexOf('my') < 0)
                             : firstWord;
 
-                    if (legalFirstWord.length !== firstWord.length || Math.floor(rnd(m++) * 100) % 7 > 0) {
+                    if (legalFirstWord.length !== firstWord.length || Math.floor(rnd() * 100) % 7 > 0) {
                         //pick a first word
-                        descChain = `${legalFirstWord[Math.floor(rnd(m++) * legalFirstWord.length)]} ${descChain.toLowerCase()}`;
+                        descChain = `${legalFirstWord[Math.floor(rnd() * legalFirstWord.length)]} ${descChain.toLowerCase()}`;
                     }
                     return `${descChain} ${usedTerm0},`;
                 };
 
                 this.getGoldenShipOpening = () => {
-                    let m = 23459236;
                     const endearment = [
                         'Princess',
                         'Baby girl',
                         'Babe',
                     ];
-                    const endearmentTerm = endearment[Math.floor(rnd(m++) * endearment.length)];
+                    const endearmentTerm = endearment[Math.floor(rnd() * endearment.length)];
                     const goldenStarTerms = [
                         'Your golden ship',
                         'Your magnificent golden ship',
@@ -414,7 +400,7 @@
                         'Your spectacular golden ship',
                         'Your beautiful ship made of magical gold',
                     ];
-                    const goldenTerm = goldenStarTerms[Math.floor(rnd(m++) * goldenStarTerms.length)];
+                    const goldenTerm = goldenStarTerms[Math.floor(rnd() * goldenStarTerms.length)];
                     const phrases = [
                         `${goldenTerm} awaits.`,
                         `${endearmentTerm}, the Golden Star is ready for boarding.`,
@@ -436,7 +422,7 @@
                         `I have prepared ${goldenTerm.toLowerCase()} for you ${endearmentTerm.toLowerCase()}.`,
                         `${goldenTerm} is ready for its princess.`,
                     ];
-                    return phrases[Math.floor(rnd(m++) * phrases.length)];
+                    return phrases[Math.floor(rnd() * phrases.length)];
                 };
 
                 this.getGoodnightOpening = () => {
@@ -452,12 +438,50 @@
                         endearment.splice(endearment.indexOf(usedTerm0), 1);
                     }
 
-                    usedTerm1 = endearment.splice(Math.floor(rnd(m++) * endearment.length), 1)[0];
-                    usedTerm2 = endearment.splice(Math.floor(rnd(m++) * endearment.length), 1)[0];
-                    if (Math.floor(rnd(m++) * 10) % 2 === 0) {
+                    usedTerm1 = endearment.splice(Math.floor(rnd() * endearment.length), 1)[0];
+                    usedTerm2 = endearment.splice(Math.floor(rnd() * endearment.length), 1)[0];
+                    if (Math.floor(rnd() * 10) % 2 === 0) {
                         return `Sweet dreams ${usedTerm1}. Goodnight ${usedTerm2}.`;
                     }
                     return `Goodnight ${usedTerm1}. Sweet dreams ${usedTerm2}.`;
+                };
+
+                this.customOrderRoulette = (num) => {
+                    const customIdeas = [
+                        `I accidentally labeled a video "Confessions and Shows of Affection" and now I'm wondering what that kind of a custom would look like!`,
+                        `A random Tonia idea!`,
+                        `A face and smile worship video with *lots* of smiles!`,
+                        `A broom balancing challenge video! Film yourself practicing and trying to get up to a full thirty seconds! Maybe do it nude just for fun? 🤭😍`,
+                        `Another custom involving your incredibly sexy collar bones, this time with smiles! Either a photo set or a video showing you playing with them and different things to put in the indentation. 🥰`,
+                        `A "Where do you see *yourself* in five years?" video. You did a "where will *we* be in five years" video once, but this is just for you. Feel free to include where we might be with our friendship/relationship, but I'm mostly interested in things like where you want to be living, what you hope for career-wise, and what you are thinking as far as love and family are concerned. 🥰`,
+                        `A detailed, up-close pussy worship video, maybe this time employing the dildo I helped you get. 🥵`,
+                        `Tonia decides!`,
+                        `A new apartment tour? 😋`,
+                        `Just try to smile at the camera for like 15 minutes. Maybe set a timer or something. lol`,
+                        `Do a book review! Maybe a book you loved, or just one you found interesting and can talk about for a long time!`,
+                        `Tonia surprises me!`,
+                        `Trash-talking something bad! Is there any movie or book you hate with a passion and you can go on and on about how awful/terrible it is? I want to hear *all* of the reasons it's bad! Write them down if you need to just to make sure you have plenty to rant about!`,
+                        `Another food review! Pick a dish you haven't tried and tell me all about it while you try it for the first time! 🥰`,
+                        `Whatever Tonia feels like doing!`,
+                        `A cooking with Tonia video making a nice lunch/dinner maybe?`,
+                        `Another full body worship video going over everything I love about you, but this time with a ponytail and more smiling!`,
+                        `Tell me more about yourself! Tell me things I don't already know about you. Things from your memories, things about your everyday life, things that you secretly hope for or wish for. Likes, dislikes. Passions. Dreams. Anything at all!`,
+                        `Brush your teeth blindfolded!`,
+                        `Tonia makes something she wants to make for me.`,
+                        `A series of challenges similar to the photo challenge series but done in succession and on video.`,
+                        `A home workout routine, with or without Kaj, with or without clothes. 🤭`,
+                        `Stacking cups in a pyramid on your belly while lying down. How high can you go?`,
+                        `A silly but sexy masturbation video (the fan idea from a while ago might work).`,
+                    ];
+
+                    return customIdeas[num % customIdeas.length];
+                };
+
+                this.spinRoulette = () => {
+                    rand1 = rnd();
+                    const min = 100;
+                    const max = 1000;
+                    return Math.floor(rand1 * (max - min)) + min;
                 };
             }
 
@@ -537,25 +561,58 @@
                     return detail;
                 };
 
-                //TODO: customs ideas generator/randomizer!
-                //Make sure to include such options as:
-                //Tonia decides!
-                //Random Tonia idea!
-                //A surprise from Tonia!
-                //... and other variations on the idea. :)
                 this.buildCustomOrderingTool = () => {
+                    const defaultMessage = `Roll to find out what custom you should order next!`;
+                    let message = state.getCustomRequestMessage();
+                    let textAreaDisabled = false;
+                    if (message === null || message === '') {
+                        textAreaDisabled = true;
+                    }
                     const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
-                    const comingSoon = createElement('h2', {}, 'Coming soon!');
-                    containerDiv.appendChild(comingSoon);
+                    
+                    const textAreaStyle = {'style': 'height:128px;', 'placeholder': defaultMessage};
+                    if (textAreaDisabled) {
+                        textAreaStyle['disabled'] = true;
+                    }
+                    const textArea = createElement('textarea', textAreaStyle, message);
+                    textArea.addEventListener('keyup', () => state.saveState());
+                    state.connectTextArea(state.stateManagerNames.customRequest, textArea);
+                    containerDiv.appendChild(textArea);
 
-                    //TODO: reset button? Re-roll button? Try again button? lol
+                    const rollButton = createElement('input', {'type': 'button', 'value': `Roll!`}, null);
+                    rollButton.addEventListener('click', () => spinCustomRoulette(textArea, rollButton), false);
+                    containerDiv.appendChild(rollButton);
 
                     const detail = makeDetail(`Custom Ordering Tool`, containerDiv, state.getCustomDetailOpen());
                     detail.childNodes[0].addEventListener('click', () => state.saveState(10), false);
                     state.connectDetail(state.stateManagerNames.customDetail, detail);
 
                     return detail;
-                }
+                };
+
+                const spinCustomRoulette = (textArea, rollButton) => {
+                    const spinSpeed = r.spinRoulette();
+                    rollButton.value = 'Rolling...';
+                    rollButton.disabled = true;
+                    textArea.disabled = true;
+                    setTimeout(() => animateCustomRoulette(textArea, rollButton, -1, spinSpeed, 1), 100);
+                };
+
+                const animateCustomRoulette = (textArea, rollButton, num, speed, friction) => {
+                    num += 1;
+                    speed -= friction;
+                    if (speed <= 0) {
+                        textArea.value = r.customOrderRoulette(num);
+                        rollButton.value = 'Roll again!';
+                        rollButton.disabled = false;
+                        textArea.disabled = false;
+                        state.saveState(10);
+                    }
+                    else {
+                        textArea.value = r.customOrderRoulette(num);
+                        setTimeout(() => animateCustomRoulette(textArea, rollButton, num, speed, friction), 1000 / speed);
+                    }
+                };
                 
                 this.buildInstallmentsTool = () => {
                     let numInstallments = state.getNumInstallments();
@@ -653,6 +710,7 @@
                     audioClipDetail: 'audioClipDetail',
                     goodnight: 'goodnightMessage',
                     goodnightDetail: 'goodnightDetail',
+                    customRequest: 'customRequestMessage',
                     customDetail: 'customDetail',
                     installments: 'allInstallments',
                     numInstallments: 'numInstallments',
@@ -734,7 +792,7 @@
                 this.reset = (key) => {
                     switch (key) {
                         case this.stateManagerNames.installments:
-                            if (this.installmentsStarted() && !confirm(`This will delete all installment messages written so far and reset the installments panel. Are you sure?`)){
+                            if (this.installmentsStarted() && !confirm(`This will delete all installment messages written so far and reset the installments panel. Are you sure?`)) {
                                 return;
                             }
                             resetState(this.stateManagerNames.numInstallments);
@@ -765,6 +823,7 @@
                 this.getGoodnightMessage = () => stateObj[this.stateManagerNames.goodnight];
                 this.getGoodnightDetailOpen = () => stateObj[this.stateManagerNames.goodnightDetail];
                 
+                this.getCustomRequestMessage = () => stateObj[this.stateManagerNames.customRequest];
                 this.getCustomDetailOpen = () => stateObj[this.stateManagerNames.customDetail];
 
                 this.getInstallmentsDetailOpen = () => stateObj[this.stateManagerNames.installmentsDetail];
