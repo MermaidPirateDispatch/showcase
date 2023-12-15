@@ -10,6 +10,171 @@
         <script src="../scripts/html_tools.js"></script>
         <script src="../scripts/string_tools.js"></script>
         <script>
+            // Old list from 2020:
+            // https://jennacitrus.wordpress.com/2020/04/25/onlyfans-list-of-restricted-words/
+            // Some words are allowed now, like 'golden' but I am leaving them visible
+            // (but commented out) for posterity. I have also added new words (like 'companion')
+            // that didn't appear in the blog post originally.
+            const restrictedWords = [
+                `abduct`,
+                `abducted`,
+                `abducting`,
+                `abduction`,
+                `admireme`,
+                `animal`,
+                `asphyxia`,
+                `asphyxiate`,
+                `asphyxiation`,
+                `asphyxicate`,
+                `asphyxication`,
+                `bait`,
+                `ballbusting`,
+                `bareback`,
+                `beastiality`,
+                `bestiality`,
+                `blacked`,
+                `blackmail`,
+                `bleeding`,
+                `blood`,
+                `bloodplay`,
+                `bukkake`,
+                `caned`,
+                `caning`,
+                `cannibal`,
+                `cbt`,
+                `cervics`,
+                `cerviks`,
+                `cervix`,
+                `child`,
+                `chloroform`,
+                `chloroformed`,
+                `chloroforming`,
+                `choke`,
+                `choking`,
+                `coma`,
+                `comatose`,
+                `companion`,
+                `consent`,
+                `cp`,
+                `cycle`,
+                `diapers`,
+                `dog`,
+                `doze`,
+                `drinking`,
+                `drunk`,
+                `drunken`,
+                `enema`,
+                `entrance`,
+                `escort`,
+                `escorting`,
+                `fanfuck`,
+                `farm`,
+                `fecal`,
+                `fetal`,
+                `fisted`,
+                `fisting`,
+                `flogging`,
+                `foetal`,
+                `forced`,
+                `forcedbi`,
+                `forceful`,
+                `forcing`,
+                `fuckafan`,
+                `fuckfan`,
+                `gangbang`,
+                `gangbangs`,
+                `gaping`,
+                //`golden`,
+                `hardsports`,
+                `hooker`,
+                `hypno`,
+                `hypnotize`,
+                `hypnotized`,
+                `hypnotizing`,
+                `inbreed`,
+                `inbreeded`,
+                `inbreeding`,
+                `incapacitate`,
+                `incapacitation`,
+                `incest`,
+                `intox`,
+                `inzest`,
+                `jail`,
+                `jailbait`,
+                `kidnap`,
+                `kidnapped`,
+                `kidnapping`,
+                `knock`,
+                `knocked`,
+                `lactate`,
+                `lactation`,
+                `lolicon`,
+                `lolita`,
+                `medicalplay`,
+                `menstrate`,
+                `menstrual`,
+                `menstruate`,
+                `menstruating`,
+                `menstruation`,
+                `meet`,
+                `molest`,
+                `molested`,
+                `molesting`,
+                `mutilate`,
+                `mutilation`,
+                `necrophilia`,
+                `nigger`,
+                `paddling`,
+                `paralyzed`,
+                `passed`,
+                `pedo`,
+                `pedophile`,
+                `pedophilia`,
+                `pee`,
+                `peeplay`,
+                `pegging`,
+                `piss`,
+                `pissing`,
+                `poo`,
+                `poop`,
+                `preteen`,
+                `prostituted`,
+                `prostituting`,
+                `prostitution`,
+                `pse`,
+                `rape`,
+                `raping`,
+                `rapist`,
+                `restrictedwordtestzulu`,
+                `scat`,
+                `showers`,
+                `skat`,
+                `snuff`,
+                `strangled`,
+                `strangling`,
+                `strangulation`,
+                `suffocate`,
+                `suffocation`,
+                `teen`,
+                `toilet`,
+                `toiletslave`,
+                `toiletslavery`,
+                `torture`,
+                `tortured`,
+                `trance`,
+                `unconscious`,
+                `unconsciousness`,
+                `underage`,
+                `unwilling`,
+                `vomit`,
+                `vomitted`,
+                `vomitting`,
+                `watersports`,
+                `whipping`,
+                `young`,
+                `zoophilia`,
+            ];
+
             function BadRando(state) {
                 const date = new Date();
                 const hour = date.getHours();
@@ -499,10 +664,12 @@
                     }
                     const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
                     
+                    const violationsOutput = createElement('input', {'type': 'text', 'readonly': true, 'style': 'display: none;'}, null);
                     const textArea = createElement('textarea', {'style': 'height:256px;'}, message);
                     textArea.addEventListener('keyup', () => state.saveState());
-                    state.connectTextArea(state.stateManagerNames.morning, textArea);
+                    state.connectTextArea(state.stateManagerNames.morning, textArea, null, censorText, violationsOutput);
                     containerDiv.appendChild(textArea);
+                    containerDiv.appendChild(violationsOutput);
 
                     const resetButton = createElement('input', {'type': 'button', 'value': regenerateButtonText}, null);
                     resetButton.addEventListener('click', () => state.reset(state.stateManagerNames.morning), false);
@@ -522,10 +689,12 @@
                     }
                     const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
                     
+                    const violationsOutput = createElement('input', {'type': 'text', 'readonly': true, 'style': 'display: none;'}, null);
                     const textArea = createElement('textarea', {'style': 'height:256px;'}, message);
                     textArea.addEventListener('keyup', () => state.saveState());
-                    state.connectTextArea(state.stateManagerNames.audioClip, textArea);
+                    state.connectTextArea(state.stateManagerNames.audioClip, textArea, null, censorText, violationsOutput);
                     containerDiv.appendChild(textArea);
+                    containerDiv.appendChild(violationsOutput);
 
                     const resetButton = createElement('input', {'type': 'button', 'value': regenerateButtonText}, null);
                     resetButton.addEventListener('click', () => state.reset(state.stateManagerNames.audioClip), false);
@@ -545,10 +714,12 @@
                     }
                     const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
                     
+                    const violationsOutput = createElement('input', {'type': 'text', 'readonly': true, 'style': 'display: none;'}, null);
                     const textArea = createElement('textarea', {'style': 'height:256px;'}, message);
                     textArea.addEventListener('keyup', () => state.saveState());
-                    state.connectTextArea(state.stateManagerNames.goodnight, textArea);
+                    state.connectTextArea(state.stateManagerNames.goodnight, textArea, null, censorText, violationsOutput);
                     containerDiv.appendChild(textArea);
+                    containerDiv.appendChild(violationsOutput);
 
                     const resetButton = createElement('input', {'type': 'button', 'value': regenerateButtonText}, null);
                     resetButton.addEventListener('click', () => state.reset(state.stateManagerNames.goodnight), false);
@@ -574,10 +745,13 @@
                     if (textAreaDisabled) {
                         textAreaStyle['disabled'] = true;
                     }
+
+                    const violationsOutput = createElement('input', {'type': 'text', 'readonly': true, 'style': 'display: none;'}, null);
                     const textArea = createElement('textarea', textAreaStyle, message);
                     textArea.addEventListener('keyup', () => state.saveState());
-                    state.connectTextArea(state.stateManagerNames.customRequest, textArea);
+                    state.connectTextArea(state.stateManagerNames.customRequest, textArea, null, censorText, violationsOutput);
                     containerDiv.appendChild(textArea);
+                    containerDiv.appendChild(violationsOutput);
 
                     const rollButton = createElement('input', {'type': 'button', 'value': `Roll!`}, null);
                     rollButton.addEventListener('click', () => spinCustomRoulette(textArea, rollButton), false);
@@ -643,6 +817,20 @@
 
                 const sanitizeNumInstallments = (num) => Math.max(1, Math.min(num, maxInstallments));
 
+                const censorText = (text) => {
+                    if (text === null || text === undefined) {
+                        return [];
+                    }
+                    const words = text.replaceAll('\n', ' ').split(' ').map(w => removeNonAlphanumeric(w.toLowerCase()));
+                    const violations = [];
+                    for (const word of words) {
+                        if (restrictedWords.indexOf(word) > -1 && !violations.indexOf(word) > -1) {
+                            violations.push(word);
+                        }
+                    }
+                    return violations;
+                };
+
                 const populateInstallmentsTool = () => {
                     const toolContainer = document.getElementById(installmentsToolContainerId);
                     return addInstallmentsBoxes(toolContainer);
@@ -661,10 +849,12 @@
                                 text = defaultValue;
                             }
 
+                            const violationsOutput = createElement('input', {'type': 'text', 'readonly': true, 'style': 'display: none;'}, null);
                             const textArea = createElement('textarea', {'style': 'height:256px;'}, text);
                             textArea.addEventListener('keyup', () => state.saveState());
-                            state.connectTextArea(state.stateManagerNames[`installment${(i+1)}`], textArea, defaultValue);
+                            state.connectTextArea(state.stateManagerNames[`installment${(i+1)}`], textArea, defaultValue, censorText, violationsOutput);
                             containerDiv.appendChild(textArea);
+                            containerDiv.appendChild(violationsOutput);
                             containerDiv.appendChild(createCheckBox(i+1, num, state.stateManagerNames[`installment${(i+1)}Done`]));
                         }
 
@@ -748,8 +938,8 @@
 
                 const stateManagers = {};
 
-                this.connectTextArea = (key, textArea, defaultValue) => {
-                    stateManagers[key] = new TextAreaStateManager(textArea, defaultValue);
+                this.connectTextArea = (key, textArea, defaultValue, cens, vOut) => {
+                    stateManagers[key] = new TextAreaStateManager(textArea, defaultValue, cens, vOut);
                 };
 
                 this.connectNumberSelector = (key, numSelector, sanitizer) => {
@@ -850,10 +1040,29 @@
                 }
             }
 
-            function TextAreaStateManager(ta, defVal) {
+            function TextAreaStateManager(ta, defVal, cens, vOut) {
                 const textArea = ta;
                 const defaultValue = defVal;
-                this.getValue = () => defaultValue && textArea.value === defaultValue ? null : textArea.value;
+                const censor = cens;
+                const violationsOutput = vOut;
+                this.getValue = () => {
+                    var returnVal = defaultValue && textArea.value === defaultValue
+                        ? null
+                        : textArea.value;
+                    if (violationsOutput !== null && violationsOutput !== undefined && censor !== null && censor !== undefined) {
+                        const violations = censor(returnVal);
+
+                        if (violations.length === 0) {
+                            violationsOutput.style.display = 'none';
+                            violationsOutput.value = '';
+                        }
+                        else {
+                            violationsOutput.style.display = 'block';
+                            violationsOutput.value = `Violation${(violations.length === 1 ? '' : 's')} Detected: ${violations.join(', ')}`;
+                        }
+                    }
+                    return returnVal;
+                };
                 this.setDisabled = (disabled) => textArea.disabled = disabled;
             }
 
