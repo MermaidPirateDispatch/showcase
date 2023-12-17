@@ -664,6 +664,8 @@
                     }
                     const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
                     
+                    //TODO: abstract the creation of a standard text input area (with violations and 'copy to clipboard' & regenerate buttons)
+                    //TODO: also give each message box a 'copy to clipboard' button?
                     const violationsOutput = createElement('input', {'type': 'text', 'readonly': true, 'style': 'display: none;'}, null);
                     const textArea = createElement('textarea', {'style': 'height:256px;'}, message);
                     textArea.addEventListener('keyup', () => state.saveState());

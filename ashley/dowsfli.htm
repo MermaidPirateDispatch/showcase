@@ -15,7 +15,7 @@
             const rotations = parseInt(queryStrings['r']);
             const displayTitle = unscramble(puzzleKey + '_title', rotations);
 
-            if (hash(localStorage.getItem(puzzleKey + rotations.toString())) === hashBrowns[puzzleKey + '_solved']) {
+            if (hash(localStorage.getItem(puzzleKey + rotations.toString())) === hashBrowns[puzzleKey]) {
                 const prizeString = unscramble(puzzleKey + '_prize', rotations);
                 const prize = JSON.parse(prizeString);
 
@@ -80,7 +80,6 @@
                 details.appendChild(text);
                 return makeDetail(header, details);
             }
-
         </script>
     </body>
 </html>

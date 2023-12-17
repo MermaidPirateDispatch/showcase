@@ -6,7 +6,7 @@ function makeFieldset(legendText) {
 }
 
 function makeDetail(summaryText, child, isOpen) {
-    const detailsAttributes = {'style': 'padding:5px;margin:3px;border-radius:5px;border:1px solid black;'};
+    const detailsAttributes = {'style': 'padding:8px 16px;margin:3px;border-radius:5px;border:1px solid black;'};
     if (isOpen) {
         detailsAttributes['open'] = 'true';
     }

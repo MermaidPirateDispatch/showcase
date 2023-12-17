@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Something Went Wrong</title>
+        <link rel="stylesheet" href="css/mvp.css">
+    </head>
+    <body>
+        <script src="../scripts/query_strings.js"></script>
+        <script src="../scripts/scrambled_eggs.js"></script>
+        <script src="../scripts/hash_browns.js"></script>
+        <script src="../scripts/html_tools.js"></script>
+        <script>
+            const queryStrings = getQueryStrings(['puzzleId', 'r']);
+            const puzzleKey = queryStrings['puzzleId'] || 'Something went wrong.';
+            const rotations = parseInt(queryStrings['r']);
+            const displayTitle = unscramble(puzzleKey + '_title', rotations);
+
+            if (hash(localStorage.getItem(puzzleKey + rotations.toString())) === hashBrowns[puzzleKey]) {
+                const prizeString = unscramble(puzzleKey + '_prize', rotations);
+                const prize = JSON.parse(prizeString);
+
+                document.title = displayTitle + ' - Prize!';
+                
+                const prizeDisplay = createElement('div', {'style': 'width:800px;height:100%;margin:0px auto;display:flex;flex-wrap:wrap;flex-direction:column;'}, null);
+                document.body.appendChild(prizeDisplay);
+                
+                const headerText = createElement('h1', {}, displayTitle + ' - Prize!');
+                prizeDisplay.appendChild(headerText);
+
+                const firstUp = createElement('p', {}, `Here's a video I made for you! It's embedded this time because I'm fancy!`);
+                prizeDisplay.appendChild(firstUp);
+
+                const firstEmbeddedVideoAttributes = {
+                    'width': '560',
+                    'height': '315',
+                    'src': prize['firstVideoSource'],
+                    'title': prize['firstVideoTitle'],
+                    'frameborder': '0',
+                    'allow': 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share',
+                    'allowfullscreen': 'true',
+                    'style': 'margin: 8px auto;',
+                };
+                const firstEmbeddedVideo = createElement('iframe', firstEmbeddedVideoAttributes, null);
+                prizeDisplay.appendChild(firstEmbeddedVideo);
+
+                const prizeExplanation = createElement('p', {}, 'Next we have some fun stuff.');
+                prizeDisplay.appendChild(prizeExplanation);
+
+                prizeDisplay.appendChild(createPrizeDetail('Favorite Land Animal', prize['favAnimal'], `This is a really cool animal. 🥰 If you've never heard of it, look it up!`));
+                
+                prizeDisplay.appendChild(createPrizeDetail('Favorite Sea Animal', prize['favSeaAnimal'], `These animals are just so beautiful and majestic!`));
+                
+                prizeDisplay.appendChild(createPrizeDetail('Favorite Air Animal', prize['favAirAnimal'], `This is the fastest animal in the world!`));
+                
+                prizeDisplay.appendChild(createPrizeDetail('Favorite 3D Shape', prize['favShape'], `There has always been something really pleasing to me about this shape. 😍`));
+                
+                prizeDisplay.appendChild(createPrizeDetail('Favorite Mythical Land Creature', prize['favLandMyth'], `I know some (maybe most) have wings. But whether they fly or not, I love them!`));
+                
+                prizeDisplay.appendChild(createPrizeDetail('Favorite Mythical Sea Creature', prize['favSeaMyth'], `You definitely could have guessed this one!`));
+                
+                prizeDisplay.appendChild(createPrizeDetail('Favorite Mythical Air Creature', prize['favAirMyth'], `These are just the most magnificent, beautiful creatures in mythology!`));
+                
+                prizeDisplay.appendChild(createPrizeDetail('Favorite Cartoon Character', prize['favCartoonCharacter'], `This guy was just so cool to me, even though he was a huge dork! lol`));
+                
+                prizeDisplay.appendChild(createPrizeDetail('Favorite Fictional Robot', prize['favRobot'], `If you haven't seen his movie, you should at least watch some clips on YouTube!`));
+                
+                prizeDisplay.appendChild(createPrizeDetail('Favorite Sport', prize['favSport'], `I enjoy watching many sports, but if I have to pick one to watch or participate in, this would be it!`));
+            }
+            else {
+                document.title = displayTitle + ' - Prize denied!';
+                
+                const noPrizeDisplay = createElement('div', {'style': 'width:800px;height:100%;margin:0px auto;display:flex;flex-wrap:wrap;flex-direction:column;'}, null);
+                document.body.appendChild(noPrizeDisplay);
+
+                const headerTitle = createElement('h1', {}, 'No Prize for You!');
+                noPrizeDisplay.appendChild(headerTitle);
+                
+                const text = `You need to complete the puzzles <a href="${'puzzles.htm' + window.location.search}" target="_top">here</a>.`;
+                const displayText = createElement('p', {}, text);
+                noPrizeDisplay.appendChild(displayText);
+            }
+
+            function createPrizeDetail(header, displayText, textText) {
+                const details = createElement('div', {'style': ''}, null);
+                const display = createElement('h2', {}, displayText);
+                details.appendChild(display);
+                const text = createElement('p', {}, textText);
+                details.appendChild(text);
+                return makeDetail(header, details);
+            }
+        </script>
+    </body>
+</html>
