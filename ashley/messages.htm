@@ -650,13 +650,15 @@
                 };
             }
 
-            function Builder(state) {
+            function Builder(st) {
+                const state = st;
                 const r = new BadRando(state);
                 const regenerateButtonText = 'Regenerate Message';
                 const installmentsToolContainerId = 'installmentsToolContainer';
                 const numInstallmentsSelectorId = 'numInstallmentsSelector';
                 const maxInstallments = state.getMaxInstallments();
 
+                //TODO: add "sent" checkboxes to all the time textareas so that once delivered they no longer default to open during their time
                 this.buildMorningMessage = () => {
                     let message = state.getMorningMessage();
                     if (message === null) {
@@ -664,10 +666,9 @@
                     }
                     const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
                     
-                    //TODO: abstract the creation of a standard text input area (with violations and 'copy to clipboard' & regenerate buttons)
                     //TODO: also give each message box a 'copy to clipboard' button?
                     const violationsOutput = createElement('input', {'type': 'text', 'readonly': true, 'style': 'display: none;'}, null);
-                    const textArea = createElement('textarea', {'style': 'height:256px;'}, message);
+                    const textArea = createElement('textarea', {'style': `height:256px;`}, message);
                     textArea.addEventListener('keyup', () => state.saveState());
                     state.connectTextArea(state.stateManagerNames.morning, textArea, null, censorText, violationsOutput);
                     containerDiv.appendChild(textArea);
@@ -884,11 +885,47 @@
                     container.appendChild(label);
                     return container;
                 };
+
+                this.buildCensoredStoryWriter = (key, title, showPromptBox) => {
+                    const myKey = key;
+                    let message = state.getAlwaysState(myKey);
+                    if (message === null) {
+                        message = '';
+                    }
+                    const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
+                    
+                    const textArea = createElement('textarea', {'style': `height:768px;`}, message);
+                    const violationsOutput = createElement('input', {'type': 'text', 'readonly': true, 'style': 'display: none;'}, null);
+                    const statsOut = createElement('div', {'style': 'display: flex; flex-direction: horizontal; gap: 8px;'}, null);
+                    textArea.addEventListener('keyup', () => state.saveState());
+                    state.connectAlwaysTextArea(myKey, textArea, null, censorText, violationsOutput, statsOut);
+                    if (showPromptBox) {
+                        const prompt = state.getAlwaysState(myKey + '_prompt') || '';
+                        const promptTextArea = createElement('textarea', {'style': `height:192px; font-size:1.25em;`}, prompt);
+                        promptTextArea.addEventListener('keyup', () => state.saveState());
+                        state.connectAlwaysTextArea(myKey + '_prompt', promptTextArea);
+                        containerDiv.appendChild(promptTextArea);
+                    }
+                    containerDiv.appendChild(statsOut);
+                    containerDiv.appendChild(textArea);
+                    containerDiv.appendChild(violationsOutput);
+
+                    const resetButton = createElement('input', {'type': 'button', 'value': 'Clear', 'style': 'background-color:#f4213a; color:#ffecec; font-weight:bold;'}, null);
+                    resetButton.addEventListener('click', () => state.reset(myKey), false);
+                    containerDiv.appendChild(resetButton);
+
+                    const detail = makeDetail(title, containerDiv, state.getAlwaysState(`${myKey}_detail`));
+                    detail.childNodes[0].addEventListener('click', () => state.saveState(10), false);
+                    state.connectAlwaysDetail(`${myKey}_detail`, detail);
+
+                    return detail;
+                };
             }
 
             function StateManager() {
                 const stateDateKey = 'MessageToolStateDate';
                 const stateDataKey = 'MessageToolStateData';
+                const alwaysStateDataKey = 'MessageToolAlwaysStateData';
                 const currentDate = (new Date()).toDateString();
                 const maxInstallments = 12;
 
@@ -932,16 +969,27 @@
                     installment11Done: 'installment11Done',
                     installment12Done: 'installment12Done',
                 };
+
                 let stateObj = {};
+                let alwaysStateObj = {};
 
                 for (let n in this.stateManagerNames) {
                     stateObj[this.stateManagerNames[n]] = null;
                 }
 
                 const stateManagers = {};
+                const alwaysStateManagers = {};
 
-                this.connectTextArea = (key, textArea, defaultValue, cens, vOut) => {
-                    stateManagers[key] = new TextAreaStateManager(textArea, defaultValue, cens, vOut);
+                this.connectAlwaysTextArea = (key, textArea, defaultValue, cens, vOut, statOut) => {
+                    alwaysStateManagers[key] = new TextAreaStateManager(textArea, defaultValue, cens, vOut, statOut);
+                };
+
+                this.connectAlwaysDetail = (key, detail) => {
+                    alwaysStateManagers[key] = new DetailStateManager(detail);
+                };
+
+                this.connectTextArea = (key, textArea, defaultValue, cens, vOut, statOut) => {
+                    stateManagers[key] = new TextAreaStateManager(textArea, defaultValue, cens, vOut, statOut);
                 };
 
                 this.connectNumberSelector = (key, numSelector, sanitizer) => {
@@ -950,7 +998,7 @@
 
                 this.connectDetail = (key, detail) => {
                     stateManagers[key] = new DetailStateManager(detail);
-                }
+                };
 
                 this.connectCheckBox = (key, checkbox) => {
                     stateManagers[key] = new CheckBoxStateManager(checkbox);
@@ -958,6 +1006,10 @@
 
                 const loadState = () => {
                     stateObj = JSON.parse(localStorage.getItem(stateDataKey));
+                };
+
+                const loadAlwaysState = () => {
+                    alwaysStateObj = JSON.parse(localStorage.getItem(alwaysStateDataKey)) || {};
                 };
 
                 this.saveState = (delay) => {
@@ -971,14 +1023,18 @@
 
                 const performSave = () => {
                     for (let n in stateManagers) {
-                        if (stateManagers.hasOwnProperty(n)) {
-                            stateObj[n] = stateManagers[n].getValue();
-                            if (n.indexOf('installment') === 0 && n.indexOf('Message') > -1) {
-                                stateManagers[n].setDisabled(stateManagers[n.replace('Message', 'Done')].getValue());
-                            }
+                        stateObj[n] = stateManagers[n].getValue();
+                        //TODO: need a better abstraction because we want checkboxes to disable other textareas
+                        if (n.indexOf('installment') === 0 && n.indexOf('Message') > -1) {
+                            stateManagers[n].setDisabled(stateManagers[n.replace('Message', 'Done')].getValue());
                         }
                     }
                     localStorage.setItem(stateDataKey, JSON.stringify(stateObj));
+
+                    for (let n in alwaysStateManagers) {
+                        alwaysStateObj[n] = alwaysStateManagers[n].getValue();
+                    }
+                    localStorage.setItem(alwaysStateDataKey, JSON.stringify(alwaysStateObj));
                 };
 
                 this.reset = (key) => {
@@ -995,7 +1051,14 @@
                             }
                             break;
                         default:
-                            resetState(key);
+                            if (stateObj.hasOwnProperty(key)) {
+                                resetState(key);
+                            }
+                            if (alwaysStateObj.hasOwnProperty(key) && (
+                                (key.indexOf('_detail') > -1) || (confirm(`This will delete all ${key} data. Are you sure?`))
+                            )) {
+                                resetAlwaysState(key);
+                            }
                     }
                     this.saveState();
                     location.reload();
@@ -1005,6 +1068,13 @@
                     stateObj[key] = null;
                     delete stateManagers[key];
                 };
+
+                const resetAlwaysState = (key) => {
+                    alwaysStateObj[key] = null;
+                    delete alwaysStateManagers[key];
+                };
+
+                this.getAlwaysState = (key) => alwaysStateObj[key];
 
                 this.getMorningMessage = () => stateObj[this.stateManagerNames.morning];
                 this.getMorningDetailOpen = () => stateObj[this.stateManagerNames.morningDetail];
@@ -1033,6 +1103,8 @@
                     return false;
                 };
 
+                loadAlwaysState();
+                //Either load the stored state on the same day, or create a new state and store that
                 if (localStorage.getItem(stateDateKey) === currentDate) {
                     loadState();
                 }
@@ -1042,11 +1114,22 @@
                 }
             }
 
-            function TextAreaStateManager(ta, defVal, cens, vOut) {
+            function TextAreaStateManager(ta, defVal, cens, vOut, statOut) {
                 const textArea = ta;
                 const defaultValue = defVal;
                 const censor = cens;
                 const violationsOutput = vOut;
+                const statsOutput = statOut;
+                let charCount, wordCount;
+                
+                if (statsOutput) {
+                    const componentStyle = 'margin: 8px 0px; border: 1px solid black; border-radius: 5px; padding: 5px;';
+                    charCount = createElement('div', {'style': componentStyle}, null);
+                    statsOutput.appendChild(charCount);
+                    wordCount = createElement('div', {'style': componentStyle}, null);
+                    statsOutput.appendChild(wordCount);
+                }
+
                 this.getValue = () => {
                     var returnVal = defaultValue && textArea.value === defaultValue
                         ? null
@@ -1062,6 +1145,11 @@
                             violationsOutput.style.display = 'block';
                             violationsOutput.value = `Violation${(violations.length === 1 ? '' : 's')} Detected: ${violations.join(', ')}`;
                         }
+                    }
+                    if (statsOutput) {
+                        charCount.innerHTML = `${textArea.value.length} character${(textArea.value.length === 1 ? '' : 's')}`;
+                        const words = textArea.value.replaceAll('\n', ' ').replaceAll('  ', ' ').split(' ').filter(x => x.length > 0).length;
+                        wordCount.innerHTML = `${words} word${(words === 1 ? '' : 's')}`;
                     }
                     return returnVal;
                 };
@@ -1095,7 +1183,8 @@
             container.appendChild(builder.buildCustomOrderingTool());
             container.appendChild(builder.buildInstallmentsTool());
             container.appendChild(createElement('h2', {}, `For Use with Everyone Else`));
-            container.appendChild(createElement('p', {}, `Coming soon...`));
+            container.appendChild(builder.buildCensoredStoryWriter('CensoredStoryWriter01', 'Prompted Story Writer', true));
+            container.appendChild(builder.buildCensoredStoryWriter('CensoredStoryWriter02', 'Unprompted Story Writer'));
             document.body.appendChild(container);
             state.saveState();
         </script>
