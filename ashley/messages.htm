@@ -894,14 +894,15 @@
                     }
                     const containerDiv = createElement('div', {'style': 'width:512px; margin:16px auto; padding:0px;'}, null);
                     
-                    const textArea = createElement('textarea', {'style': `height:768px;`}, message);
+                    //Ugh... is it possible to lock the width and save the height for this and the prompt box?
+                    const textArea = createElement('textarea', {'style': `height:512px;`}, message);
                     const violationsOutput = createElement('input', {'type': 'text', 'readonly': true, 'style': 'display: none;'}, null);
                     const statsOut = createElement('div', {'style': 'display: flex; flex-direction: horizontal; gap: 8px;'}, null);
                     textArea.addEventListener('keyup', () => state.saveState());
                     state.connectAlwaysTextArea(myKey, textArea, null, censorText, violationsOutput, statsOut);
                     if (showPromptBox) {
                         const prompt = state.getAlwaysState(myKey + '_prompt') || '';
-                        const promptTextArea = createElement('textarea', {'style': `height:192px; font-size:1.25em;`}, prompt);
+                        const promptTextArea = createElement('textarea', {'style': `height:128px; font-size:1.25em;`}, prompt);
                         promptTextArea.addEventListener('keyup', () => state.saveState());
                         state.connectAlwaysTextArea(myKey + '_prompt', promptTextArea);
                         containerDiv.appendChild(promptTextArea);
