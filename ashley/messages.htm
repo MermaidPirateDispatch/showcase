@@ -64,7 +64,7 @@
                 `drunk`,
                 `drunken`,
                 `enema`,
-                `entrance`,
+                //`entrance`,
                 `escort`,
                 `escorting`,
                 `fanfuck`,
@@ -901,6 +901,7 @@
                     textArea.addEventListener('keyup', () => state.saveState());
                     state.connectAlwaysTextArea(myKey, textArea, null, censorText, violationsOutput, statsOut);
                     if (showPromptBox) {
+                        //TODO: is it possible to have the clear button clear the prompt box too if it exists?
                         const prompt = state.getAlwaysState(myKey + '_prompt') || '';
                         const promptTextArea = createElement('textarea', {'style': `height:128px; font-size:1.25em;`}, prompt);
                         promptTextArea.addEventListener('keyup', () => state.saveState());
