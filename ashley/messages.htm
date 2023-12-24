@@ -916,6 +916,8 @@
                     resetButton.addEventListener('click', () => state.reset(myKey), false);
                     containerDiv.appendChild(resetButton);
 
+                    //TODO: nav button for halfway? Maybe for ~9000 character mark?
+
                     const detail = makeDetail(title, containerDiv, state.getAlwaysState(`${myKey}_detail`));
                     detail.childNodes[0].addEventListener('click', () => state.saveState(10), false);
                     state.connectAlwaysDetail(`${myKey}_detail`, detail);
