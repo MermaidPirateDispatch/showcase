@@ -1,0 +1,89 @@
+<!doctype HTML>
+<html>
+    <head>
+        <title>Left Center Right</title>
+    </head>
+    <body>
+        <script src="../scripts/html_tools.js" />
+        <script>
+            function LCRDie() {
+                const faces = [
+                    'left',
+                    'right',
+                    '*',
+                    '@',
+                    '@',
+                    '@',
+                ];
+
+                this.roll = () => faces[Math.floor(Math.random() * faces.length)];
+            }
+
+            function Player(numPieces) {
+                let tokens = numPieces;
+
+                this.receiveToken = () => tokens++;
+
+                this.takeTurn = (leftPlayer, rightPlayer, dice) => {
+                    const rolls = Math.min(tokens, dice.length);
+                    let toCenter = 0;
+                    for (let i = 0; i < rolls; i++) {
+                        var result = dice[i].roll();
+                        switch (result) {
+                            case 'left':
+                                leftPlayer.receiveToken();
+                                tokens--;
+                                break;
+
+                            case 'right':
+                                rightPlayer.receiveToken();
+                                tokens--;
+                                break;
+
+                            case '*':
+                                toCenter++;
+                                break;
+                        }
+                    }
+                    return toCenter;
+                };
+            }
+
+            function Game(numPlayers) {
+                const dice = [
+                    new LCRDie(),
+                    new LCRDie(),
+                    new LCRDie(),
+                ];
+
+                const tokensPerPlayer = 3;
+                const totalTokensInPlay = tokensPerPlayer * numPlayers;
+                let turn = 0;
+                let centerTokens = 0;
+
+                const players = [];
+                for (let i = 0; i < numPlayers; i++) {
+                    players.push(new Player(tokensPerPlayer));
+                }
+
+                const playerForTurn = (num) => players[(num + players.length) % players.length];
+
+                this.nextRound = () => {
+                    const currentPlayer = playerForTurn(turn);
+                    const leftPlayer = playerForTurn(turn + 1);
+                    const rightPlayer = playerForTurn(turn - 1);
+                    centerTokens += currentPlayer.takeTurn(leftPlayer, rightPlayer, dice);
+
+                    //win condition
+                    if (centerTokens === totalTokensInPlay - 1) {
+                        //current player wins
+                    }
+                    else {
+                        //game continues
+                        turn++;
+                    }
+                };
+            }
+        </script>
+    </body>
+<html>
