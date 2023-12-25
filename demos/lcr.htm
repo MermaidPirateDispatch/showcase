@@ -132,34 +132,36 @@
                     const rolls = Math.min(tokens, dice.length);
                     const toCenter = [];
                     const turnResults = [];
+                    let tokensLost = 0;
                     for (let i = 0; i < rolls; i++) {
                         var result = dice[i].roll();
                         switch (result) {
                             case 'left':
                                 turnResults.push(`left`);
-                                const leftTokenLoc = tokenLocation(tokens - 1);
-                                leftPlayer.receiveToken(new TravelingToken(leftTokenLoc.x, leftTokenLoc.y, i * tokenDeliveryOffset));
-                                tokens--;
+                                const leftTokenLoc = tokenLocation(tokens - (tokensLost + 1));
+                                leftPlayer.receiveToken(new TravelingToken(leftTokenLoc.x, leftTokenLoc.y, tokensLost * tokenDeliveryOffset));
+                                tokensLost++;
                                 break;
 
                             case 'right':
                                 turnResults.push(`right`);
-                                const rightTokenLoc = tokenLocation(tokens - 1);
-                                rightPlayer.receiveToken(new TravelingToken(rightTokenLoc.x, rightTokenLoc.y, i * tokenDeliveryOffset));
-                                tokens--;
+                                const rightTokenLoc = tokenLocation(tokens - (tokensLost + 1));
+                                rightPlayer.receiveToken(new TravelingToken(rightTokenLoc.x, rightTokenLoc.y, tokensLost * tokenDeliveryOffset));
+                                tokensLost++;
                                 break;
 
                             case '*':
                                 turnResults.push(`center`);
-                                const centerTokenLoc = tokenLocation(tokens - 1);
-                                toCenter.push(new TravelingToken(centerTokenLoc.x, centerTokenLoc.y, i * tokenDeliveryOffset));
-                                tokens--;
+                                const centerTokenLoc = tokenLocation(tokens - (tokensLost + 1));
+                                toCenter.push(new TravelingToken(centerTokenLoc.x, centerTokenLoc.y, tokensLost * tokenDeliveryOffset));
+                                tokensLost++;
                                 break;
 
                             default:
                                 turnResults.push(`keep`);
                         }
                     }
+                    tokens -= tokensLost;
                     const txt = turnResults.length === 0 ? 'skip' : turnResults.join(', ');
                     turnText.push(new TurnSummaryText(x - 50, y - 100, txt, 100));
                     return toCenter;
