@@ -10,6 +10,7 @@
             const tokenDeliveryOffset = 20;
             const tokenThickness = 5;
 
+            //TODO: clean this up and make the colors higher contrast?
             function drawToken(ctx, x, y) {
                 const radius = 20;
                 const depth = 4; // Adjust for desired depth
@@ -168,7 +169,7 @@
                 };
 
                 this.draw = (ctx, gameState) => {
-                    //TODO: draw the player
+                    //TODO: draw the player?
                     for (let i = 0; i < (tokens - travelingTokens.length); i++) {
                         const loc = tokenLocation(i);
                         drawToken(ctx, loc.x, loc.y);
@@ -183,7 +184,7 @@
                             travelingTokens.splice(i, 1);
                         }
                     }
-                    drawText(ctx, `${tokens}`, x-4, y + 10 - (tokens * tokenThickness));
+                    //drawText(ctx, `${tokens}`, x-4, y + 10 - (tokens * tokenThickness));
                     for (let i = 0; i < turnText.length; i++) {
                         turnText[i].draw(ctx);
                     }
