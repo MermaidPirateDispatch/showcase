@@ -194,7 +194,7 @@
                         }
                     }
 
-                    if (gameState === 'won' && tokens === 1) {
+                    if (gameState === 'won' && tokens > 0) {
                         //this player is the winner
                         drawText(ctx, `I won!`, x - 20, y + 50);
                     }
@@ -231,6 +231,16 @@
                 }
 
                 const playerForTurn = (num) => players[(num + players.length) % players.length];
+
+                const checkWinState = () => {
+                    let inPlay = 0;
+                    for (const player of players) {
+                        if (player.canPlay()) {
+                            inPlay++;
+                        }
+                    }
+                    return inPlay === 1;
+                };
 
                 const tokenOffset = (i) => {
                     const spreadRadius = (tableRadius/4);
@@ -270,8 +280,7 @@
                     }
 
                     //win condition
-                    //TODO: need to write the rest of the infrastructure code so I know what to return for the game win/continue scenarios.
-                    if (centerTokens === totalTokensInPlay - 1) {
+                    if (checkWinState()) {
                         //current player wins
                         gameState = 'won';
                     }
